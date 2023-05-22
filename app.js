@@ -35,6 +35,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/forBeginners', forBeginners);
 app.use('/baseball', baseballRouter);
+app.use(express.static('link'));
+
 // app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
