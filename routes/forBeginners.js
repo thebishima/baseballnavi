@@ -7,8 +7,8 @@ const db = new sqlite3.Database('account.sqlite3');
 /* GET home page. */
 router.get('/', function (req, res, next) {
   db.serialize(() => {
-    db.all("select * from account",(err, rows) => {
-      if(!err) {
+    db.all("select * from account", (err, rows) => {
+      if (!err) {
         var data = {
           content: rows
         };
@@ -19,31 +19,46 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/loginHome', function (req, res, next) {
-  res.render('forBeginners/loginHome', { title: 'Express' });
+  if (req.cookies.name != null) {
+    res.redirect('/forBeginners/account');
+  }
+  var data = {
+  }
+  res.render('forBeginners/loginHome', data);
 });
 
 
-
+// ログインページ
 
 const { check, validationResult } = require('express-validator');
 
 router.get('/login', function (req, res, next) {
+  if (req.cookies.name != null) {
+    res.redirect('/forBeginners/account');
+  }
   var data = {
-
   }
   res.render('forBeginners/login', data);
 });
 
-router.post('/login', (req, res, next) => {
-  const nm = req.body.name;
-  const pw = req.body.password;
-  db.serialize(() => {
-    db.run('insert into account (name, password, team) values (?, ?, ?)',
-    nm, pw, te);
-  });
-  res.redirect('/forBeginners/account');
-});
 
+router.post('/login', (req, res, next) => {
+  let nm = req.body.name;
+  let pw = req.body.password;
+  let msg;
+  db.serialize(() => {
+    db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
+      if (row != undefined) {
+        res.cookie('name', nm);
+        res.cookie('password', pw);
+        res.redirect('/forBeginners/account');
+        return;
+      } else {
+        res.redirect('/forBeginners/login');
+      }
+    });
+  });
+});
 
 
 // サインアップ
@@ -59,19 +74,27 @@ router.post('/signup', (req, res, next) => {
   const pw = req.body.password;
   const te = req.body.team;
   db.serialize(() => {
-    db.run('insert into account (name, password, team) values (?, ?, ?)',
-    nm, pw, te);
+    db.run('insert into account (name, password, team) values (?, ?, ?)', nm, pw, te);
   });
+  res.cookie('name', nm);
+  res.cookie('password', pw);
+
   res.redirect('/forBeginners/account');
 });
 
 
-
-
-
-
+// アカウント管理ページ
 router.get('/account', function (req, res, next) {
-  res.render('forBeginners/account', { title: 'Express' });
+  let namae = req.cookies.name;
+  if (namae != null) {
+    var data = {
+      name: namae
+    }
+  } else {
+    res.redirect('/forBeginners/login');
+  }
+
+  res.render('forBeginners/account', data);
 });
 
 module.exports = router;
