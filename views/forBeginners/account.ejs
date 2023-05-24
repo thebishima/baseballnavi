@@ -36,15 +36,21 @@
   </nav>
 
   <p>こんにちは、<%= name %>さん</p>
+  <form action='/forBeginners/deletecookie' method='post'>
+    <input type='submit' value='ログアウト' onclick="logout()">
+  </form>
 
-<button name="logout" onclick="logout">ログアウト</button>
+  <script>
+    function logout() {
+      let result = window.confirm('本当にログアウトしますか?');
+      if (result) {
 
-<script>
-  function logout() {
-    document.cookie = 'name=' + name +'; max-age=0';
-    // document.cookie = 'name=; max-age=0';
-  }
-</script>
+      }
+      else {
+        location.reload();
+      }
+    }
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
