@@ -16,19 +16,48 @@
   <header>
     <div class="p-3 mb-2 bg-dark text-white">
       <h1 class="display-4">
-        <%- month%>/<%- day%>　試合日程
+        総合
       </h1>
     </div>
   </header>
 <hr>
-<h3>当日日程</h3>
+<h3>試合速報(<%- month%>/<%- day%>)</h3>
+<hr>
+<h4>セ・リーグ</h4>
+<table class="table">
+  <%- contentl1%>
+</table>
+<br>
+<table class="table">
+  <%- contentc1%>
+</table>
+<br>
+<table class="table">
+  <%- contentr1%>
+</table>
+<br>
+<h4>パ・リーグ</h4>
+<table class="table">
+  <%- contentl2%>
+</table>
+<br>
+<table class="table">
+  <%- contentc2%>
+</table>
+<br>
+<table class="table">
+  <%- contentr2%>
+</table>
+<br>
 <!--スクレイピング内容???-->
 <hr>
   <div class="text-center">
-    <a href="./baseball/nittei"><h3>年間試合日程へ</h3></a>
-    <a href="./baseball/juni"><h3>順位表へ</h3></a>
-    <a href="./baseball/seiseki"><h3>個人成績へ</h3></a>
+    <div class="p-3 mb-2 bg-secondary text-white"><a href="./baseball/nittei"><h3>年間試合日程へ</h3></a></div>
+    <div class="p-3 mb-2 bg-secondary text-white"><a href="./baseball/juni"><h3>順位表へ</h3></a></div>
+    <div class="p-3 mb-2 bg-secondary text-white"><a href="./baseball/seiseki"><h3>個人成績へ</h3></a></div>
   </div>
+
+
   <div role="main">
     <table class="table">
     </table>
