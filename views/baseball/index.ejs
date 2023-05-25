@@ -14,14 +14,53 @@
 
 <body class="container">
   <header>
-    <h1 class="display-4">
-      bbb
-    </h1>
+    <div class="p-3 mb-2 bg-dark text-white">
+      <h1 class="display-4">
+        総合
+      </h1>
+    </div>
   </header>
+<hr>
+<h3>試合速報(<%- month%>/<%- day%>)</h3>
+<hr>
+<h4>セ・リーグ</h4>
+<table class="table">
+  <%- contentl1%>
+</table>
+<br>
+<table class="table">
+  <%- contentc1%>
+</table>
+<br>
+<table class="table">
+  <%- contentr1%>
+</table>
+<br>
+<h4>パ・リーグ</h4>
+<table class="table">
+  <%- contentl2%>
+</table>
+<br>
+<table class="table">
+  <%- contentc2%>
+</table>
+<br>
+<table class="table">
+  <%- contentr2%>
+</table>
+<br>
+<!--スクレイピング内容???-->
+<hr>
+  <div class="text-center">
+    <div class="p-3 mb-2 bg-secondary text-white"><a href="./baseball/nittei"><h3>年間試合日程へ</h3></a></div>
+    <div class="p-3 mb-2 bg-secondary text-white"><a href="./baseball/juni"><h3>順位表へ</h3></a></div>
+    <div class="p-3 mb-2 bg-secondary text-white"><a href="./baseball/seiseki"><h3>個人成績へ</h3></a></div>
+  </div>
+
+
   <div role="main">
     <table class="table">
     </table>
-    
   </div>
 </body>
 
