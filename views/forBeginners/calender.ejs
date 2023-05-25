@@ -37,24 +37,20 @@
     </div>
   </nav>
 
+  <p>
+    <%= content %>の試合一覧
+  </p>
 
-  <script>
-    // let str = '';
-
-    // for (let i = 0; i < baystars.length; i++) {
-    //   str = str + '<li>';
-    //   for (let j = 0; j < baystars[i].length; j++) {
-    //     if (j == 3) {
-    //       str = str + baystars[i][j];
-    //     } else {
-    //       str = str + baystars[i][j] + '___';
-    //     }
-    //   }
-    //   str = str + '</li>';
-    // }
-    // document.getElementById('a').innerHTML = str;
-
-  </script>
+  <div class="row text-center">
+    <div class="col-md">
+      <form method="post" action="/forBeginners/route">
+        <%- teamInfo %>
+        <div>
+          <input type="submit" value="送信" class="submit btn btn-primary">
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

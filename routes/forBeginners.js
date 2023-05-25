@@ -30,7 +30,7 @@ router.get('/loginHome', function (req, res, next) {
 
 // ログインページ
 
-const { check, validationResult } = require('express-validator');
+const { check, validationResult, cookie } = require('express-validator');
 
 router.get('/login', function (req, res, next) {
   if (req.cookies.name != null) {
@@ -52,6 +52,7 @@ router.post('/login', (req, res, next) => {
         res.cookie('name', row.name);
         res.cookie('password', row.password);
         res.cookie('team', row.team);
+        res.cookie('station', row.station);
         res.redirect('/forBeginners/account');
         return;
       } else {
@@ -69,21 +70,28 @@ router.get('/signup', (req, res, next) => {
   res.render('forBeginners/signup', data);
 });
 
+let count = 1;
 router.post('/signup', (req, res, next) => {
   const nm = req.body.name;
   const pw = req.body.password;
   const te = req.body.team;
+  const st = req.body.station;
+
+
   db.serialize(() => {
-    db.run('insert into account (name, password, team) values (?, ?, ?)', nm, pw, te);
-  });
-  db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
-    if (row != undefined) {
-      res.cookie('name', row.name);
-      res.cookie('password', row.password);
-      res.cookie('team', row.team);
-      res.redirect('/forBeginners/account');
-      return;
-    }
+    db.run('insert into account (id, name, password, team, station) values (?, ?, ?, ?, ?)', count, nm, pw, te, st);
+    db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
+      if (row != undefined) {
+        res.cookie('name', row.name);
+        res.cookie('password', row.password);
+        res.cookie('team', row.team);
+        res.cookie('station', row.station);
+        res.redirect('/forBeginners/account');
+        count++;
+        return;
+      }
+    });
+
   });
 });
 
@@ -106,30 +114,95 @@ router.post("/deletecookie", function (req, res, next) {
   res.clearCookie("name"); //Cookie削除
   res.clearCookie("password"); //Cookie削除
   res.clearCookie("team"); //Cookie削除
+  res.clearCookie("station"); //Cookie削除
   res.redirect('/forBeginners');
 });
 
 
-let teamArray = {'東京ヤクルトスワローズ':'ヤクルト', '横浜DeNAベイスターズ':'DeNA', '阪神タイガース':'阪神', '読売ジャイアンツ':'巨人', '広島東洋カープ':'広島', '中日ドラゴンズ':'中日', 'オリックス・バファローズ':'オリックス', '福岡ソフトバンクホークス':'ソフトバンク', '埼玉西武ライオンズ':'西武', '東北楽天ゴールデンイーグルス':'楽天', '千葉ロッテマリーンズ':'ロッテ', '北海道日本ハムファイターズ':'日本ハム'}
+let teamArray = { '東京ヤクルトスワローズ': 'ヤクルト', '横浜DeNAベイスターズ': 'DeNA', '阪神タイガース': '阪神', '読売ジャイアンツ': '巨人', '広島東洋カープ': '広島', '中日ドラゴンズ': '中日', 'オリックス・バファローズ': 'オリックス', '福岡ソフトバンクホークス': 'ソフトバンク', '埼玉西武ライオンズ': '西武', '東北楽天ゴールデンイーグルス': '楽天', '千葉ロッテマリーンズ': 'ロッテ', '北海道日本ハムファイターズ': '日本ハム' };
+
+let teamArrayReverse = { 'ヤクルト': '東京ヤクルトスワローズ', 'DeNA': '横浜DeNAベイスターズ', '阪神': '阪神タイガース', '巨人': '読売ジャイアンツ', '広島': '広島東洋カープ', '中日': '中日ドラゴンズ', 'オリックス': 'オリックス・バファローズ', 'ソフトバンク': '福岡ソフトバンクホークス', '西武': '埼玉西武ライオンズ', '楽天': '東北楽天ゴールデンイーグルス', 'ロッテ': '千葉ロッテマリーンズ', '日本ハム': '北海道日本ハムファイターズ' };
 
 // 日程表ページ
 router.get('/calender', function (req, res, next) {
   let accountTeam = req.cookies.team;
-  console.log(accountTeam);
+  let rows = '';
+
   db.serialize(() => {
     db.each('select * from calender where team = ?', [teamArray[accountTeam]], (err, row) => {
       if (row != undefined) {
-        console.log(row);
+        rows += '<input type="radio" value="' + row.date + '" name="postDate">' + row.date + row.team + row.vsteam + row.location + row.time + '<br>';
       }
-    });
+    }, (err, row) => {
+      let data = {
+        content: accountTeam,
+        teamInfo: rows
+      };
+      res.render('forBeginners/calender', data);
+    }
+    );
   });
-
-  res.render('forBeginners/calender', { title: 'Express' });
 });
 
 
+const homeStudium = { '北海道日本ハムファイターズ': '北広島駅', '東北楽天ゴールデンイーグルス': '宮城野原', '千葉ロッテマリーンズ': '海浜幕張', '読売ジャイアンツ': '水道橋駅', '東京ヤクルトスワローズ': '外苑前駅', '横浜DeNAベイスターズ': '関内', '埼玉西武ライオンズ': '西武球場前駅', '中日ドラゴンズ': 'ナゴヤドーム前矢田', 'オリックス・バファローズ': 'ドーム前千代崎', '阪神タイガース': '甲子園駅', '広島東洋カープ': '広島駅', '福岡ソフトバンクホークス': '唐人町駅' };
+
+const homeStation = { '神宮': '外苑前駅', 'バンテリンドーム': 'ナゴヤドーム前矢田', '甲子園': '甲子園駅', 'マツダスタジアム': '広島駅', '横浜': '関内', '東京ドーム': '水道橋駅', 'PayPayドーム': '唐人町駅', 'ベルーナドーム': '西武球場前駅', 'エスコンF': '北広島駅', '楽天モバイル': '宮城野原', 'ZOZOマリン': '海浜幕張', '京セラD大阪': 'ドーム前千代崎' };
 
 
+// 経路検索ページ
+router.post('/route', function (req, res, next) {
+  const postDate = req.body.postDate;
+  const cookieTeam = teamArray[req.cookies.team];
+  const from = req.cookies.station;
+  let m, d, ddate, dtime, hh, m1, m2, dminute, station, url, date;
+
+  db.serialize(() => {
+    db.each('select * from calender where team = ? and date = ?', [cookieTeam, postDate], (err, row) => {
+      console.log(row);
+      if (row != undefined) {
+        date = row.date + row.time + 'VS' + row.vsteam + 'in' + row.location;
+
+        ddate = row.date;
+        ddate = ddate.split(/月|日/g);
+        m = ddate[0];
+        if (m < 10) {
+          m = '0' + m;
+        }
+        d = ddate[1];
+        if (d < 10) {
+          d = '0' + d;
+        }
+
+        dtime = row.time;
+        dtime = dtime.split(':');
+        hh = dtime[0] - 1;
+        if (hh < 10) {
+          hh = '0' + hh;
+        }
+        dminute = dtime[1];
+        dminute = dminute.slice('');
+        m1 = dminute[0];
+        m2 = dminute[1];
+
+        station = homeStation[row.location];
+
+        console.log(row.location);
+        console.log(station);
+        console.log(url);
+
+        url = '<a href="https://transit.yahoo.co.jp/search/result?from=' + from + '&to=%' + station + '&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y=2023&m=' + m + '&d=' + d + '&hh=' + hh + '&m1=' + m1 + '&m2=' + m2 + '&type=4&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1" target="_blank">経路検索</a>';
+      }
+    }, (err, row) => {
+      let data = {
+        targetData: date,
+        url: url
+      };
+      res.render('forBeginners/route', data);
+    });
+  });
+
+});
 
 
 
@@ -168,9 +241,6 @@ router.get('/calender', function (req, res, next) {
 //   };
 //   res.render('forBeginners/example', data);
 // });
-
-
-
 
 
 module.exports = router;
