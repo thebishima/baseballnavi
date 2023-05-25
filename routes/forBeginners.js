@@ -4,20 +4,14 @@ var router = express.Router();
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database('account.sqlite3');
 
-/* GET home page. */
+// トップページ
 router.get('/', function (req, res, next) {
-  db.serialize(() => {
-    db.all("select * from account", (err, rows) => {
-      if (!err) {
-        var data = {
-          content: rows
-        };
-        res.render('forBeginners/index', data);
-      }
-    });
-  });
+  var data = {};
+  res.render('forBeginners/index', data);
 });
 
+
+// ログインorサインアップページ
 router.get('/loginHome', function (req, res, next) {
   if (req.cookies.name != null) {
     res.redirect('/forBeginners/account');
@@ -70,7 +64,7 @@ router.get('/signup', (req, res, next) => {
   res.render('forBeginners/signup', data);
 });
 
-let count = 1;
+let count;
 router.post('/signup', (req, res, next) => {
   const nm = req.body.name;
   const pw = req.body.password;
@@ -79,6 +73,13 @@ router.post('/signup', (req, res, next) => {
 
 
   db.serialize(() => {
+    db.get('select max(ID) as id from account ', (err, row) => {
+      if (row != undefined) {
+        count = row.id + 1;
+        console.log(count);
+      }
+    });
+
     db.run('insert into account (id, name, password, team, station) values (?, ?, ?, ?, ?)', count, nm, pw, te, st);
     db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
       if (row != undefined) {
@@ -86,8 +87,8 @@ router.post('/signup', (req, res, next) => {
         res.cookie('password', row.password);
         res.cookie('team', row.team);
         res.cookie('station', row.station);
-        res.redirect('/forBeginners/account');
         count++;
+        res.redirect('/forBeginners/account');
         return;
       }
     });
@@ -159,7 +160,6 @@ router.post('/route', function (req, res, next) {
 
   db.serialize(() => {
     db.each('select * from calender where team = ? and date = ?', [cookieTeam, postDate], (err, row) => {
-      console.log(row);
       if (row != undefined) {
         date = row.date + row.time + 'VS' + row.vsteam + 'in' + row.location;
 
@@ -186,10 +186,6 @@ router.post('/route', function (req, res, next) {
         m2 = dminute[1];
 
         station = homeStation[row.location];
-
-        console.log(row.location);
-        console.log(station);
-        console.log(url);
 
         url = '<a href="https://transit.yahoo.co.jp/search/result?from=' + from + '&to=%' + station + '&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y=2023&m=' + m + '&d=' + d + '&hh=' + hh + '&m1=' + m1 + '&m2=' + m2 + '&type=4&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1" target="_blank">経路検索</a>';
       }
