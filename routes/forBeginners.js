@@ -21,9 +21,7 @@ router.get('/loginHome', function (req, res, next) {
 });
 
 
-// ログインページ　チェック機能の追加　要検討
-const { check, validationResult, cookie } = require('express-validator');
-
+// ログインページ
 router.get('/login', function (req, res, next) {
   if (req.cookies.name != null) {
     res.redirect('/forBeginners/account');
@@ -62,8 +60,6 @@ let count;
 router.post('/signup', (req, res, next) => {
   const nm = req.body.name;
   const pw = req.body.password;
-  const te = req.body.team;
-  const st = req.body.station;
 
   db.serialize(() => {
     db.get('select max(ID) as id from account ', (err, row) => {
@@ -73,13 +69,11 @@ router.post('/signup', (req, res, next) => {
       }
     });
 
-    db.run('insert into account (id, name, password, team, station) values (?, ?, ?, ?, ?)', count, nm, pw, te, st);
+    db.run('insert into account (id, name, password) values (?, ?, ?)', count, nm, pw);
     db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
       if (row != undefined) {
         res.cookie('name', row.name);
         res.cookie('password', row.password);
-        res.cookie('team', row.team);
-        res.cookie('station', row.station);
         count++;
         res.redirect('/forBeginners/account');
       }
@@ -88,12 +82,19 @@ router.post('/signup', (req, res, next) => {
 });
 
 
-// アカウント管理ページ
+// アカウント管理ページ 好きな球団フォームの初期値の実装　要検討
 router.get('/account', function (req, res, next) {
-  let namae = req.cookies.name;
-  if (namae != null) {
+  let name = req.cookies.name;
+  let password = req.cookies.password;
+  let station = req.cookies.station;
+  let team = req.cookies.team;
+
+  if (name != null) {
     var data = {
-      name: namae
+      name: name,
+      valueName: name,
+      valuePassword: password,
+      valueStation: station
     }
   } else {
     res.redirect('/forBeginners/loginHome');
@@ -102,6 +103,10 @@ router.get('/account', function (req, res, next) {
 });
 
 router.post('/account', (req, res, next) => {
+  let accountName = req.cookies.name;
+  let accountPassword = req.cookies.password;
+  let accountStation = req.cookies.station;
+  let accountTeam = req.cookies.team;
   let nm, pw, st, te;
   if (req.body.name != '') {
     nm = req.body.name;
@@ -115,38 +120,53 @@ router.post('/account', (req, res, next) => {
   if (req.body.team != '') {
     te = req.body.team;
   }
-  console.log(nm);
-  console.log(pw);
-  console.log(st);
-  console.log(te);
 
-
-  // db.serialize(() => {
-  //   db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
-  //     if (row != undefined) {
-  //       res.cookie('name', row.name);
-  //       res.cookie('password', row.password);
-  //       res.cookie('team', row.team);
-  //       res.cookie('station', row.station);
-  //       res.redirect('/forBeginners/account');
-  //       return;
-  //     } else {
-  //       res.redirect('/forBeginners/login');
-  //     }
-  //   });
-  // });
+  if (pw != undefined) {
+    db.serialize(() => {
+      db.run('update account set password = ? where name = ?', [pw, accountName]);
+      res.clearCookie("password");
+      res.cookie('password', pw);
+    });
+  }
+  if (st != undefined) {
+    db.serialize(() => {
+      db.run('update account set station = ? where name = ?', [st, accountName]);
+      res.clearCookie("station");
+      res.cookie('station', st);
+    });
+  }
+  if (te != undefined) {
+    db.serialize(() => {
+      db.run('update account set team = ? where name = ?', [te, accountName]);
+      res.clearCookie("team");
+      res.cookie('team', te);
+    });
+  }
+  if (nm != undefined) { //nmを最後に変更する
+    db.serialize(() => {
+      db.run('update account set name = ? where name = ?', [nm, accountName]);
+      res.clearCookie("name");
+      res.cookie('name', nm);
+    });
+  }
 
   res.redirect('/forBeginners/account');
 });
 
 
 // ログアウト用ページ　
-router.post("/deletecookie", function (req, res, next) {
-  res.clearCookie("name");
-  res.clearCookie("password");
-  res.clearCookie("team");
-  res.clearCookie("station");
-  res.redirect('/forBeginners');
+router.get("/deletecookie", function (req, res, next) {
+  const result = req.query.torf;
+
+  if (result == 'true') {
+    res.clearCookie("name");
+    res.clearCookie("password");
+    res.clearCookie("team");
+    res.clearCookie("station");
+    res.redirect('/forBeginners/loginHome');
+  }
+
+  res.redirect('/forBeginners/account');
 });
 
 

@@ -42,19 +42,33 @@
       <form method="post" action="/forBeginners/account">
         <div class="form-group">
           <label>アカウント名変更</label>
-          <input type="text" class="form-control" name="name">
+          <input type="text" class="form-control" name="name" value="<%- valueName %>">
         </div>
         <div class="form-group">
           <label>パスワード変更</label>
-          <input type="text" class="form-control" name="password">
+          <input type="text" class="form-control" name="password" value="<%- valuePassword %>">
         </div>
         <div class="form-group">
           <label>最寄り駅変更</label>
-          <input type="text" class="form-control" name="station">
+          <input type="text" class="form-control" name="station" value="<%- valueStation %>">
         </div>
         <div class="form-group">
-          <label>好きな球団変更</label>
-          <input type="text" class="form-control" name="team">
+          <label>好きな球団</label>
+          <select class="form-control" name="team">
+            <option></option>
+            <option>東京ヤクルトスワローズ</option>
+            <option>横浜DeNAベイスターズ</option>
+            <option>阪神タイガース</option>
+            <option>読売ジャイアンツ</option>
+            <option>広島東洋カープ</option>
+            <option>中日ドラゴンズ</option>
+            <option>オリックス・バファローズ</option>
+            <option>福岡ソフトバンクホークス</option>
+            <option>埼玉西武ライオンズ</option>
+            <option>東北楽天ゴールデンイーグルス</option>
+            <option>千葉ロッテマリーンズ</option>
+            <option>北海道日本ハムファイターズ</option>
+          </select>
         </div>
         <div>
           <input type="submit" value="送信" class="submit btn btn-primary">
@@ -66,20 +80,18 @@
 
   <div class="row text-center">
     <div class="col-md">
-      <form action='/forBeginners/deletecookie' method='post'>
-        <input type='submit' value='ログアウト' onclick="logout()" class="submit btn btn-primary">
-      </form>
+      <button id="btn" class="submit btn btn-primary" onclick="logout()">logout</button>
     </div>
   </div>
+
 
   <script>
     function logout() {
       let result = window.confirm('本当にログアウトしますか?');
       if (result) {
-
-      }
-      else {
-        location.reload();
+        window.location.href='http://localhost:3000/forBeginners/deletecookie?torf=true';
+      } else {
+        window.location.href='http://localhost:3000/forBeginners/deletecookie?torf=false';
       }
     }
   </script>
