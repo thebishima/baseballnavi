@@ -52,7 +52,7 @@ router.post('/login', (req, res, next) => {
 });
 
 
-// サインアップ
+// サインアップ idの部分を要改善
 router.get('/signup', (req, res, next) => {
   var data = {}
   res.render('forBeginners/signup', data);
@@ -102,6 +102,10 @@ router.get('/account', function (req, res, next) {
 });
 
 router.post('/account', (req, res, next) => {
+  let accountName = req.cookies.name;
+  let accountPassword = req.cookies.password;
+  let accountStation = req.cookies.station;
+  let accountTeam = req.cookies.team;
   let nm, pw, st, te;
   if (req.body.name != '') {
     nm = req.body.name;
@@ -115,26 +119,37 @@ router.post('/account', (req, res, next) => {
   if (req.body.team != '') {
     te = req.body.team;
   }
-  console.log(nm);
-  console.log(pw);
-  console.log(st);
-  console.log(te);
 
+  if (pw != undefined) {
+    db.serialize(() => {
+      db.run('update account set password = ? where name = ?', [pw, accountName]);
+      res.clearCookie("password");
+      res.cookie('password', pw);
+    });  
+  }
+  if (st != undefined) {
+    db.serialize(() => {
+      db.run('update account set station = ? where name = ?', [st, accountName]);
+      res.clearCookie("station");
+      res.cookie('station', st);
+    });  
+  }
+  if (te != undefined) {
+    db.serialize(() => {
+      db.run('update account set team = ? where name = ?', [te, accountName]);
+      res.clearCookie("team");
+      res.cookie('team', te);
+    });  
+  }
+  if (nm != undefined) { //nmを最後に変更する
+    db.serialize(() => {
+      db.run('update account set name = ? where name = ?', [nm, accountName]);
+      console.log(nm);
+      res.clearCookie("name");
+      res.cookie('name', nm);
+    });  
+  }
 
-  // db.serialize(() => {
-  //   db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
-  //     if (row != undefined) {
-  //       res.cookie('name', row.name);
-  //       res.cookie('password', row.password);
-  //       res.cookie('team', row.team);
-  //       res.cookie('station', row.station);
-  //       res.redirect('/forBeginners/account');
-  //       return;
-  //     } else {
-  //       res.redirect('/forBeginners/login');
-  //     }
-  //   });
-  // });
 
   res.redirect('/forBeginners/account');
 });
