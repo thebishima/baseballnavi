@@ -326,6 +326,28 @@ router.get('/juni', function (req, res, next) {    //─────────
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 router.get('/seiseki', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────成績表
     var today = new Date();
     var a = today.getFullYear();
@@ -336,16 +358,6 @@ router.get('/seiseki', function (req, res, next) {    //────────
 
     res.render('baseball/seiseki', data);
 });
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -438,9 +450,9 @@ router.get('/hanshin', function (req, res, next) {    //────────
                 td3 += '<tr>'
             } else if (counttd > 45 && counttd < 61) {
                 td4 += '<tr>'
-            } else if (counttd > 61 && counttd <75) {
+            } else if (counttd > 61 && counttd < 75) {
                 td5 += '<tr>'
-            } else if (counttd > 75 && counttd <80) {
+            } else if (counttd > 75 && counttd < 80) {
                 td6 += '<tr>'
             } else if (counttd == 81) {
                 td7 += '<tr>'
@@ -456,9 +468,9 @@ router.get('/hanshin', function (req, res, next) {    //────────
                     td3 += '<td>' + html + '</td>'
                 } else if (counttd > 45 && counttd < 61) {
                     td4 += '<td>' + html + '</td>'
-                } else if (counttd > 61 && counttd <75) {
+                } else if (counttd > 61 && counttd < 75) {
                     td5 += '<td>' + html + '</td>'
-                } else if (counttd > 75 && counttd <80) {
+                } else if (counttd > 75 && counttd < 80) {
                     td6 += '<td>' + html + '</td>'
                 } else if (counttd == 81) {
                     td7 += '<td>' + html + '</td>'
@@ -473,9 +485,9 @@ router.get('/hanshin', function (req, res, next) {    //────────
                 td3 += '</tr>'
             } else if (counttd > 45 && counttd < 61) {
                 td4 += '</tr>'
-            } else if (counttd > 61 && counttd <75) {
+            } else if (counttd > 61 && counttd < 75) {
                 td5 += '</tr>'
-            } else if (counttd > 75 && counttd <80) {
+            } else if (counttd > 75 && counttd < 80) {
                 td6 += '</tr>'
             } else if (counttd == 81) {
                 td7 += '</tr>'
@@ -517,6 +529,1105 @@ router.get('/hanshin', function (req, res, next) {    //────────
 
 
 
+router.get('/yakuruto', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────ヤクルト選手一覧
+    var today = new Date();
+    var a = today.getFullYear();
+    var countth = 1;
+    var counttd = 1;
+
+    var th1 = '';
+    var th2 = '';
+    var th3 = '';
+    var th4 = '';
+    var th5 = '';
+    var th6 = '';
+    var th7 = '';
+    var th8 = '';
+
+    var td1 = '';
+    var td2 = '';
+    var td3 = '';
+    var td4 = '';
+    var td5 = '';
+    var td6 = '';
+    var td7 = '';
+    var td8 = '';
+
+
+    var rows = '';
+    var rows2 = '';
+    //─────────────────────────────────────────────────────────────────────ここからスクレイピング
+    const url = 'https://npb.jp/bis/teams/rst_s.html';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+
+        //thead取得部分
+        const t = await page.$$('.rosterdivlisttbl > table > tbody > tr');
+        th1 += '<tr>';
+        th2 += '<tr>';
+        th3 += '<tr>';
+        th4 += '<tr>';
+        th5 += '<tr>';
+        th6 += '<tr>';
+        th7 += '<tr>';
+        th8 += '<tr>';
+        for (var e of t) {
+            const tt = await e.$$('th');
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (countth == 1) {
+                    th1 += '<th>' + html + '</th>';
+                } else if (countth == 3) {
+                    th2 += '<th>' + html + '</th>';
+                } else if (countth == 40) {
+                    th3 += '<th>' + html + '</th>';
+                } else if (countth == 46) {
+                    th4 += '<th>' + html + '</th>';
+                } else if (countth == 65) {
+                    th5 += '<th>' + html + '</th>';
+                } else if (countth == 74) {
+                    th6 += '<th>' + html + '</th>';
+                } else if (countth == 80) {
+                    th7 += '<th>' + html + '</th>';
+                } else if (countth == 83) {
+                    th8 += '<th>' + html + '</th>';
+                }
+            }
+            // console.log(countth);
+            countth++;
+
+        }
+        th1 += '</tr>';
+        th2 += '</tr>';
+        th3 += '</tr>';
+        th4 += '</tr>';
+        th5 += '</tr>';
+        th6 += '</tr>';
+        th7 += '</tr>';
+        th8 += '</tr>';
+
+        for (var e of t) {
+            const tt = await e.$$('td');
+            if (counttd == 2) {
+                td1 += '<tr>';
+            } else if (counttd > 3 && counttd < 40) {
+                td2 += '<tr>';
+            } else if (counttd > 40 && counttd < 46) {
+                td3 += '<tr>';
+            } else if (counttd > 46 && counttd < 65) {
+                td4 += '<tr>';
+            } else if (counttd > 65 && counttd < 74) {
+                td5 += '<tr>';
+            } else if (counttd > 74 && counttd < 80) {
+                td6 += '<tr>';
+            } else if (counttd > 80 && counttd < 83) {
+                td7 += '<tr>';
+            } else if (counttd == 84) {
+                td8 += '<tr>';
+            }
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (counttd == 2) {
+                    td1 += '<td>' + html + '</td>';
+                } else if (counttd > 3 && counttd < 40) {
+                    td2 += '<td>' + html + '</td>';
+                } else if (counttd > 40 && counttd < 46) {
+                    td3 += '<td>' + html + '</td>';
+                } else if (counttd > 46 && counttd < 65) {
+                    td4 += '<td>' + html + '</td>';
+                } else if (counttd > 65 && counttd < 74) {
+                    td5 += '<td>' + html + '</td>';
+                } else if (counttd > 74 && counttd < 80) {
+                    td6 += '<td>' + html + '</td>';
+                } else if (counttd > 80 && counttd < 83) {
+                    td7 += '<td>' + html + '</td>';
+                } else if (counttd == 84) {
+                    td8 += '<td>' + html + '</td>';
+                }
+            }
+            // console.log(countth);
+            if (counttd == 2) {
+                td1 += '</tr>';
+            } else if (counttd > 3 && counttd < 40) {
+                td2 += '</tr>';
+            } else if (counttd > 40 && counttd < 46) {
+                td3 += '</tr>';
+            } else if (counttd > 46 && counttd < 65) {
+                td4 += '</tr>';
+            } else if (counttd > 65 && counttd < 74) {
+                td5 += '</tr>';
+            } else if (counttd > 74 && counttd < 80) {
+                td6 += '</tr>';
+            } else if (counttd > 80 && counttd < 83) {
+                td7 += '</tr>';
+            } else if (counttd == 84) {
+                td8 += '</tr>';
+            }
+
+            counttd++;
+        }
+
+        rows += th1;
+        rows += td1;
+        rows += th2;
+        rows += td2;
+        rows += th3;
+        rows += td3;
+        rows += th4;
+        rows += td4;
+        rows += th5;
+        rows += td5;
+        rows2 += th6;
+        rows2 += td6;
+        rows2 += th7;
+        rows2 += td7;
+        rows2 += th8;
+        rows2 += td8;
+
+
+        //------------------------------------------------------------------データの受け渡しへ
+        data = {
+            year: a,
+            content: rows,
+            content2: rows2,
+        };
+        res.render('baseball/yakuruto', data);
+    })();
+
+});
+
+
+
+router.get('/yokohama', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────横浜選手一覧
+    var today = new Date();
+    var a = today.getFullYear();
+    var countth = 1;
+    var counttd = 1;
+
+    var th1 = '';
+    var th2 = '';
+    var th3 = '';
+    var th4 = '';
+    var th5 = '';
+    var th6 = '';
+    var th7 = '';
+    var th8 = '';
+    var th9 = '';
+
+    var td1 = '';
+    var td2 = '';
+    var td3 = '';
+    var td4 = '';
+    var td5 = '';
+    var td6 = '';
+    var td7 = '';
+    var td8 = '';
+    var td9 = '';
+
+
+    var rows = '';
+    var rows2 = '';
+    //─────────────────────────────────────────────────────────────────────ここからスクレイピング
+    const url = 'https://npb.jp/bis/teams/rst_db.html';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+
+        //thead取得部分
+        const t = await page.$$('.rosterdivlisttbl > table > tbody > tr');
+        th1 += '<tr>';
+        th2 += '<tr>';
+        th3 += '<tr>';
+        th4 += '<tr>';
+        th5 += '<tr>';
+        th6 += '<tr>';
+        th7 += '<tr>';
+        th8 += '<tr>';
+        th9 += '<tr>';
+        for (var e of t) {
+            const tt = await e.$$('th');
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (countth == 1) {
+                    th1 += '<th>' + html + '</th>';
+                } else if (countth == 3) {
+                    th2 += '<th>' + html + '</th>';
+                } else if (countth == 41) {
+                    th3 += '<th>' + html + '</th>';
+                } else if (countth == 48) {
+                    th4 += '<th>' + html + '</th>';
+                } else if (countth == 63) {
+                    th5 += '<th>' + html + '</th>';
+                } else if (countth == 74) {
+                    th6 += '<th>' + html + '</th>';
+                } else if (countth == 82) {
+                    th7 += '<th>' + html + '</th>';
+                } else if (countth == 85) {
+                    th8 += '<th>' + html + '</th>';
+                } else if (countth == 87) {
+                    th9 += '<th>' + html + '</th>';
+                }
+            }
+            // console.log(countth);
+            countth++;
+
+        }
+        th1 += '</tr>';
+        th2 += '</tr>';
+        th3 += '</tr>';
+        th4 += '</tr>';
+        th5 += '</tr>';
+        th6 += '</tr>';
+        th7 += '</tr>';
+        th8 += '</tr>';
+        th9 += '</tr>';
+
+        for (var e of t) {
+            const tt = await e.$$('td');
+            if (counttd == 2) {
+                td1 += '<tr>';
+            } else if (counttd > 3 && counttd < 41) {
+                td2 += '<tr>';
+            } else if (counttd > 41 && counttd < 48) {
+                td3 += '<tr>';
+            } else if (counttd > 48 && counttd < 63) {
+                td4 += '<tr>';
+            } else if (counttd > 63 && counttd < 74) {
+                td5 += '<tr>';
+            } else if (counttd > 74 && counttd < 82) {
+                td6 += '<tr>';
+            } else if (counttd > 82 && counttd < 85) {
+                td7 += '<tr>';
+            } else if (counttd == 86) {
+                td8 += '<tr>';
+            } else if (counttd > 87 && counttd < 91) {
+                td9 += '<tr>';
+            }
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (counttd == 2) {
+                    td1 += '<td>' + html + '</td>';
+                } else if (counttd > 3 && counttd < 41) {
+                    td2 += '<td>' + html + '</td>';
+                } else if (counttd > 41 && counttd < 48) {
+                    td3 += '<td>' + html + '</td>';
+                } else if (counttd > 48 && counttd < 63) {
+                    td4 += '<td>' + html + '</td>';
+                } else if (counttd > 63 && counttd < 74) {
+                    td5 += '<td>' + html + '</td>';
+                } else if (counttd > 74 && counttd < 82) {
+                    td6 += '<td>' + html + '</td>';
+                } else if (counttd > 82 && counttd < 85) {
+                    td7 += '<td>' + html + '</td>';
+                } else if (counttd == 86) {
+                    td8 += '<td>' + html + '</td>';
+                } else if (counttd > 87 && counttd < 91) {
+                    td9 += '<td>' + html + '</td>';
+                }
+            }
+            // console.log(countth);
+            if (counttd == 2) {
+                td1 += '</tr>';
+            } else if (counttd > 3 && counttd < 41) {
+                td2 += '</tr>';
+            } else if (counttd > 41 && counttd < 48) {
+                td3 += '</tr>';
+            } else if (counttd > 48 && counttd < 63) {
+                td4 += '</tr>';
+            } else if (counttd > 63 && counttd < 74) {
+                td5 += '</tr>';
+            } else if (counttd > 74 && counttd < 82) {
+                td6 += '</tr>';
+            } else if (counttd > 82 && counttd < 85) {
+                td7 += '</tr>';
+            } else if (counttd == 86) {
+                td8 += '</tr>';
+            } else if (counttd > 87 && counttd < 91) {
+                td9 += '</tr>';
+            }
+
+            counttd++;
+        }
+
+        rows += th1;
+        rows += td1;
+        rows += th2;
+        rows += td2;
+        rows += th3;
+        rows += td3;
+        rows += th4;
+        rows += td4;
+        rows += th5;
+        rows += td5;
+        rows2 += th6;
+        rows2 += td6;
+        rows2 += th7;
+        rows2 += td7;
+        rows2 += th8;
+        rows2 += td8;
+        rows2 += th9;
+        rows2 += td9;
+
+
+        //------------------------------------------------------------------データの受け渡しへ
+        data = {
+            year: a,
+            content: rows,
+            content2: rows2,
+        };
+        res.render('baseball/yokohama', data);
+    })();
+
+});
+
+
+
+
+
+router.get('/kyozin', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────巨人選手一覧
+    var today = new Date();
+    var a = today.getFullYear();
+    var countth = 1;
+    var counttd = 1;
+
+    var th1 = '';
+    var th2 = '';
+    var th3 = '';
+    var th4 = '';
+    var th5 = '';
+    var th6 = '';
+    var th7 = '';
+    var th8 = '';
+    var th9 = '';
+
+    var td1 = '';
+    var td2 = '';
+    var td3 = '';
+    var td4 = '';
+    var td5 = '';
+    var td6 = '';
+    var td7 = '';
+    var td8 = '';
+    var td9 = '';
+
+
+    var rows = '';
+    var rows2 = '';
+    //─────────────────────────────────────────────────────────────────────ここからスクレイピング
+    const url = 'https://npb.jp/bis/teams/rst_g.html';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+
+        //thead取得部分
+        const t = await page.$$('.rosterdivlisttbl > table > tbody > tr');
+        th1 += '<tr>';
+        th2 += '<tr>';
+        th3 += '<tr>';
+        th4 += '<tr>';
+        th5 += '<tr>';
+        th6 += '<tr>';
+        th7 += '<tr>';
+        th8 += '<tr>';
+        th9 += '<tr>';
+        for (var e of t) {
+            const tt = await e.$$('th');
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (countth == 1) {
+                    th1 += '<th>' + html + '</th>';
+                } else if (countth == 3) {
+                    th2 += '<th>' + html + '</th>';
+                } else if (countth == 37) {
+                    th3 += '<th>' + html + '</th>';
+                } else if (countth == 43) {
+                    th4 += '<th>' + html + '</th>';
+                } else if (countth == 61) {
+                    th5 += '<th>' + html + '</th>';
+                } else if (countth == 74) {
+                    th6 += '<th>' + html + '</th>';
+                } else if (countth == 96) {
+                    th7 += '<th>' + html + '</th>';
+                } else if (countth == 102) {
+                    th8 += '<th>' + html + '</th>';
+                } else if (countth == 109) {
+                    th9 += '<th>' + html + '</th>';
+                }
+            }
+            // console.log(countth);
+            countth++;
+
+        }
+        th1 += '</tr>';
+        th2 += '</tr>';
+        th3 += '</tr>';
+        th4 += '</tr>';
+        th5 += '</tr>';
+        th6 += '</tr>';
+        th7 += '</tr>';
+        th8 += '</tr>';
+        th9 += '</tr>';
+
+        for (var e of t) {
+            const tt = await e.$$('td');
+            if (counttd == 2) {
+                td1 += '<tr>';
+            } else if (counttd > 3 && counttd < 37) {
+                td2 += '<tr>';
+            } else if (counttd > 37 && counttd < 43) {
+                td3 += '<tr>';
+            } else if (counttd > 43 && counttd < 61) {
+                td4 += '<tr>';
+            } else if (counttd > 61 && counttd < 74) {
+                td5 += '<tr>';
+            } else if (counttd > 74 && counttd < 96) {
+                td6 += '<tr>';
+            } else if (counttd > 96 && counttd < 102) {
+                td7 += '<tr>';
+            } else if (counttd > 102 && counttd < 109) {
+                td8 += '<tr>';
+            } else if (counttd > 109 && counttd < 117) {
+                td9 += '<tr>';
+            }
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (counttd == 2) {
+                    td1 += '<td>' + html + '</td>';
+                } else if (counttd > 3 && counttd < 37) {
+                    td2 += '<td>' + html + '</td>';
+                } else if (counttd > 37 && counttd < 43) {
+                    td3 += '<td>' + html + '</td>';
+                } else if (counttd > 43 && counttd < 61) {
+                    td4 += '<td>' + html + '</td>';
+                } else if (counttd > 61 && counttd < 74) {
+                    td5 += '<td>' + html + '</td>';
+                } else if (counttd > 74 && counttd < 96) {
+                    td6 += '<td>' + html + '</td>';
+                } else if (counttd > 96 && counttd < 102) {
+                    td7 += '<td>' + html + '</td>';
+                } else if (counttd > 102 && counttd < 109) {
+                    td8 += '<td>' + html + '</td>';
+                } else if (counttd > 109 && counttd < 117) {
+                    td9 += '<td>' + html + '</td>';
+                }
+            }
+            if (counttd == 2) {
+                td1 += '</tr>';
+            } else if (counttd > 3 && counttd < 37) {
+                td2 += '</tr>';
+            } else if (counttd > 37 && counttd < 43) {
+                td3 += '</tr>';
+            } else if (counttd > 43 && counttd < 61) {
+                td4 += '</tr>';
+            } else if (counttd > 61 && counttd < 74) {
+                td5 += '</tr>';
+            } else if (counttd > 74 && counttd < 96) {
+                td6 += '</tr>';
+            } else if (counttd > 96 && counttd < 102) {
+                td7 += '</tr>';
+            } else if (counttd > 102 && counttd < 109) {
+                td8 += '</tr>';
+            } else if (counttd > 109 && counttd < 117) {
+                td9 += '</tr>';
+            }
+
+            counttd++;
+        }
+
+        rows += th1;
+        rows += td1;
+        rows += th2;
+        rows += td2;
+        rows += th3;
+        rows += td3;
+        rows += th4;
+        rows += td4;
+        rows += th5;
+        rows += td5;
+        rows2 += th6;
+        rows2 += td6;
+        rows2 += th7;
+        rows2 += td7;
+        rows2 += th8;
+        rows2 += td8;
+        rows2 += th9;
+        rows2 += td9;
+
+
+        //------------------------------------------------------------------データの受け渡しへ
+        data = {
+            year: a,
+            content: rows,
+            content2: rows2,
+        };
+        res.render('baseball/kyozin', data);
+    })();
+
+});
+
+
+
+
+
+
+
+router.get('/hirosima', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────広島選手一覧
+    var today = new Date();
+    var a = today.getFullYear();
+    var countth = 1;
+    var counttd = 1;
+
+    var th1 = '';
+    var th2 = '';
+    var th3 = '';
+    var th4 = '';
+    var th5 = '';
+    var th6 = '';
+    var th7 = '';
+    var th8 = '';
+
+    var td1 = '';
+    var td2 = '';
+    var td3 = '';
+    var td4 = '';
+    var td5 = '';
+    var td6 = '';
+    var td7 = '';
+    var td8 = '';
+
+
+    var rows = '';
+    var rows2 = '';
+    //─────────────────────────────────────────────────────────────────────ここからスクレイピング
+    const url = 'https://npb.jp/bis/teams/rst_c.html';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+
+        //thead取得部分
+        const t = await page.$$('.rosterdivlisttbl > table > tbody > tr');
+        th1 += '<tr>';
+        th2 += '<tr>';
+        th3 += '<tr>';
+        th4 += '<tr>';
+        th5 += '<tr>';
+        th6 += '<tr>';
+        th7 += '<tr>';
+        th8 += '<tr>';
+        for (var e of t) {
+            const tt = await e.$$('th');
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (countth == 1) {
+                    th1 += '<th>' + html + '</th>';
+                } else if (countth == 3) {
+                    th2 += '<th>' + html + '</th>';
+                } else if (countth == 38) {
+                    th3 += '<th>' + html + '</th>';
+                } else if (countth == 47) {
+                    th4 += '<th>' + html + '</th>';
+                } else if (countth == 63) {
+                    th5 += '<th>' + html + '</th>';
+                } else if (countth == 75) {
+                    th6 += '<th>' + html + '</th>';
+                } else if (countth == 81) {
+                    th7 += '<th>' + html + '</th>';
+                } else if (countth == 83) {
+                    th8 += '<th>' + html + '</th>';
+                }
+            }
+            // console.log(countth);
+            countth++;
+
+        }
+        th1 += '</tr>';
+        th2 += '</tr>';
+        th3 += '</tr>';
+        th4 += '</tr>';
+        th5 += '</tr>';
+        th6 += '</tr>';
+        th7 += '</tr>';
+        th8 += '</tr>';
+
+        for (var e of t) {
+            const tt = await e.$$('td');
+            if (counttd == 2) {
+                td1 += '<tr>';
+            } else if (counttd > 3 && counttd < 38) {
+                td2 += '<tr>';
+            } else if (counttd > 38 && counttd < 47) {
+                td3 += '<tr>';
+            } else if (counttd > 47 && counttd < 63) {
+                td4 += '<tr>';
+            } else if (counttd > 63 && counttd < 75) {
+                td5 += '<tr>';
+            } else if (counttd > 75 && counttd < 81) {
+                td6 += '<tr>';
+            } else if (counttd > 81 && counttd < 83) {
+                td7 += '<tr>';
+            } else if (counttd > 83 && counttd < 86) {
+                td8 += '<tr>';
+            }
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (counttd == 2) {
+                    td1 += '<td>' + html + '</td>';
+                } else if (counttd > 3 && counttd < 38) {
+                    td2 += '<td>' + html + '</td>';
+                } else if (counttd > 38 && counttd < 47) {
+                    td3 += '<td>' + html + '</td>';
+                } else if (counttd > 47 && counttd < 63) {
+                    td4 += '<td>' + html + '</td>';
+                } else if (counttd > 63 && counttd < 75) {
+                    td5 += '<td>' + html + '</td>';
+                } else if (counttd > 75 && counttd < 81) {
+                    td6 += '<td>' + html + '</td>';
+                } else if (counttd > 81 && counttd < 83) {
+                    td7 += '<td>' + html + '</td>';
+                } else if (counttd > 83 && counttd < 86) {
+                    td8 += '<td>' + html + '</td>';
+                }
+            }
+            // console.log(countth);
+            if (counttd == 2) {
+                td1 += '</tr>';
+            } else if (counttd > 3 && counttd < 38) {
+                td2 += '</tr>';
+            } else if (counttd > 38 && counttd < 47) {
+                td3 += '</tr>';
+            } else if (counttd > 47 && counttd < 63) {
+                td4 += '</tr>';
+            } else if (counttd > 63 && counttd < 75) {
+                td5 += '</tr>';
+            } else if (counttd > 75 && counttd < 81) {
+                td6 += '</tr>';
+            } else if (counttd > 81 && counttd < 83) {
+                td7 += '</tr>';
+            } else if (counttd > 83 && counttd < 86) {
+                td8 += '</tr>';
+            }
+
+            counttd++;
+        }
+
+        rows += th1;
+        rows += td1;
+        rows += th2;
+        rows += td2;
+        rows += th3;
+        rows += td3;
+        rows += th4;
+        rows += td4;
+        rows += th5;
+        rows += td5;
+        rows2 += th6;
+        rows2 += td6;
+        rows2 += th7;
+        rows2 += td7;
+        rows2 += th8;
+        rows2 += td8;
+
+
+        //------------------------------------------------------------------データの受け渡しへ
+        data = {
+            year: a,
+            content: rows,
+            content2: rows2,
+        };
+        res.render('baseball/hirosima', data);
+    })();
+
+});
+
+
+
+
+
+
+
+
+router.get('/tyuniti', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────中日選手一覧
+    var today = new Date();
+    var a = today.getFullYear();
+    var countth = 1;
+    var counttd = 1;
+
+    var th1 = '';
+    var th2 = '';
+    var th3 = '';
+    var th4 = '';
+    var th5 = '';
+    var th6 = '';
+    var th7 = '';
+    var th8 = '';
+
+    var td1 = '';
+    var td2 = '';
+    var td3 = '';
+    var td4 = '';
+    var td5 = '';
+    var td6 = '';
+    var td7 = '';
+    var td8 = '';
+
+
+    var rows = '';
+    var rows2 = '';
+    //─────────────────────────────────────────────────────────────────────ここからスクレイピング
+    const url = 'https://npb.jp/bis/teams/rst_d.html';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+
+        //thead取得部分
+        const t = await page.$$('.rosterdivlisttbl > table > tbody > tr');
+        th1 += '<tr>';
+        th2 += '<tr>';
+        th3 += '<tr>';
+        th4 += '<tr>';
+        th5 += '<tr>';
+        th6 += '<tr>';
+        th7 += '<tr>';
+        th8 += '<tr>';
+        for (var e of t) {
+            const tt = await e.$$('th');
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (countth == 1) {
+                    th1 += '<th>' + html + '</th>';
+                } else if (countth == 3) {
+                    th2 += '<th>' + html + '</th>';
+                } else if (countth == 35) {
+                    th3 += '<th>' + html + '</th>';
+                } else if (countth == 43) {
+                    th4 += '<th>' + html + '</th>';
+                } else if (countth == 59) {
+                    th5 += '<th>' + html + '</th>';
+                } else if (countth == 72) {
+                    th6 += '<th>' + html + '</th>';
+                } else if (countth == 83) {
+                    th7 += '<th>' + html + '</th>';
+                } else if (countth == 86) {
+                    th8 += '<th>' + html + '</th>';
+                }
+            }
+            // console.log(countth);
+            countth++;
+
+        }
+        th1 += '</tr>';
+        th2 += '</tr>';
+        th3 += '</tr>';
+        th4 += '</tr>';
+        th5 += '</tr>';
+        th6 += '</tr>';
+        th7 += '</tr>';
+        th8 += '</tr>';
+
+        for (var e of t) {
+            const tt = await e.$$('td');
+            if (counttd == 2) {
+                td1 += '<tr>';
+            } else if (counttd > 3 && counttd < 35) {
+                td2 += '<tr>';
+            } else if (counttd > 35 && counttd < 43) {
+                td3 += '<tr>';
+            } else if (counttd > 43 && counttd < 59) {
+                td4 += '<tr>';
+            } else if (counttd > 59 && counttd < 72) {
+                td5 += '<tr>';
+            } else if (counttd > 72 && counttd < 83) {
+                td6 += '<tr>';
+            } else if (counttd > 83 && counttd < 86) {
+                td7 += '<tr>';
+            } else if (counttd == 87) {
+                td8 += '<tr>';
+            }
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (counttd == 2) {
+                    td1 += '<td>' + html + '</td>';
+                } else if (counttd > 3 && counttd < 35) {
+                    td2 += '<td>' + html + '</td>';
+                } else if (counttd > 35 && counttd < 43) {
+                    td3 += '<td>' + html + '</td>';
+                } else if (counttd > 43 && counttd < 59) {
+                    td4 += '<td>' + html + '</td>';
+                } else if (counttd > 59 && counttd < 72) {
+                    td5 += '<td>' + html + '</td>';
+                } else if (counttd > 72 && counttd < 83) {
+                    td6 += '<td>' + html + '</td>';
+                } else if (counttd > 83 && counttd < 86) {
+                    td7 += '<td>' + html + '</td>';
+                } else if (counttd == 87) {
+                    td8 += '<td>' + html + '</td>';
+                }
+            }
+            // console.log(countth);
+            if (counttd == 2) {
+                td1 += '</tr>';
+            } else if (counttd > 3 && counttd < 35) {
+                td2 += '</tr>';
+            } else if (counttd > 35 && counttd < 43) {
+                td3 += '</tr>';
+            } else if (counttd > 43 && counttd < 59) {
+                td4 += '</tr>';
+            } else if (counttd > 59 && counttd < 72) {
+                td5 += '</tr>';
+            } else if (counttd > 72 && counttd < 83) {
+                td6 += '</tr>';
+            } else if (counttd > 83 && counttd < 86) {
+                td7 += '</tr>';
+            } else if (counttd == 87) {
+                td8 += '</tr>';
+            }
+
+            counttd++;
+        }
+
+        rows += th1;
+        rows += td1;
+        rows += th2;
+        rows += td2;
+        rows += th3;
+        rows += td3;
+        rows += th4;
+        rows += td4;
+        rows += th5;
+        rows += td5;
+        rows2 += th6;
+        rows2 += td6;
+        rows2 += th7;
+        rows2 += td7;
+        rows2 += th8;
+        rows2 += td8;
+
+
+        //------------------------------------------------------------------データの受け渡しへ
+        data = {
+            year: a,
+            content: rows,
+            content2: rows2,
+        };
+        res.render('baseball/tyuniti', data);
+    })();
+
+});
+
+
+
+
+
+
+
+
+
+
+router.get('/orix', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────オリックス選手一覧
+    var today = new Date();
+    var a = today.getFullYear();
+    var countth = 1;
+    var counttd = 1;
+
+    var th1 = '';
+    var th2 = '';
+    var th3 = '';
+    var th4 = '';
+    var th5 = '';
+    var th6 = '';
+    var th7 = '';
+    var th8 = '';
+    var th9 = '';
+
+    var td1 = '';
+    var td2 = '';
+    var td3 = '';
+    var td4 = '';
+    var td5 = '';
+    var td6 = '';
+    var td7 = '';
+    var td8 = '';
+    var td9 = '';
+
+
+    var rows = '';
+    var rows2 = '';
+    //─────────────────────────────────────────────────────────────────────ここからスクレイピング
+    const url = 'https://npb.jp/bis/teams/rst_b.html';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+
+        //thead取得部分
+        const t = await page.$$('.rosterdivlisttbl > table > tbody > tr');
+        th1 += '<tr>';
+        th2 += '<tr>';
+        th3 += '<tr>';
+        th4 += '<tr>';
+        th5 += '<tr>';
+        th6 += '<tr>';
+        th7 += '<tr>';
+        th8 += '<tr>';
+        th9 += '<tr>';
+        for (var e of t) {
+            const tt = await e.$$('th');
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (countth == 1) {
+                    th1 += '<th>' + html + '</th>';
+                } else if (countth == 3) {
+                    th2 += '<th>' + html + '</th>';
+                } else if (countth == 35) {
+                    th3 += '<th>' + html + '</th>';
+                } else if (countth == 42) {
+                    th4 += '<th>' + html + '</th>';
+                } else if (countth == 60) {
+                    th5 += '<th>' + html + '</th>';
+                } else if (countth == 74) {
+                    th6 += '<th>' + html + '</th>';
+                } else if (countth == 85) {
+                    th7 += '<th>' + html + '</th>';
+                } else if (countth == 88) {
+                    th8 += '<th>' + html + '</th>';
+                } else if (countth == 91) {
+                    th9 += '<th>' + html + '</th>';
+                }
+            }
+            // console.log(countth);
+            countth++;
+
+        }
+        th1 += '</tr>';
+        th2 += '</tr>';
+        th3 += '</tr>';
+        th4 += '</tr>';
+        th5 += '</tr>';
+        th6 += '</tr>';
+        th7 += '</tr>';
+        th8 += '</tr>';
+        th9 += '</tr>';
+
+        for (var e of t) {
+            const tt = await e.$$('td');
+            if (counttd == 2) {
+                td1 += '<tr>';
+            } else if (counttd > 3 && counttd < 35) {
+                td2 += '<tr>';
+            } else if (counttd > 35 && counttd < 42) {
+                td3 += '<tr>';
+            } else if (counttd > 42 && counttd < 61) {
+                td4 += '<tr>';
+            } else if (counttd > 60 && counttd < 74) {
+                td5 += '<tr>';
+            } else if (counttd > 74 && counttd < 85) {
+                td6 += '<tr>';
+            } else if (counttd > 85 && counttd < 88) {
+                td7 += '<tr>';
+            } else if (counttd > 88 && counttd < 91) {
+                td8 += '<tr>';
+            } else if (counttd > 91 && counttd < 94) {
+                td9 += '<tr>';
+            }
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (counttd == 2) {
+                    td1 += '<td>' + html + '</td>';
+                } else if (counttd > 3 && counttd < 35) {
+                    td2 += '<td>' + html + '</td>';
+                } else if (counttd > 35 && counttd < 42) {
+                    td3 += '<td>' + html + '</td>';
+                } else if (counttd > 42 && counttd < 60) {
+                    td4 += '<td>' + html + '</td>';
+                } else if (counttd > 60 && counttd < 74) {
+                    td5 += '<td>' + html + '</td>';
+                } else if (counttd > 74 && counttd < 85) {
+                    td6 += '<td>' + html + '</td>';
+                } else if (counttd > 85 && counttd < 88) {
+                    td7 += '<td>' + html + '</td>';
+                } else if (counttd > 88 && counttd < 91) {
+                    td8 += '<td>' + html + '</td>';
+                } else if (counttd > 91 && counttd < 94) {
+                    td9 += '<td>' + html + '</td>';
+                }
+            }
+            if (counttd == 2) {
+                td1 += '</tr>';
+            } else if (counttd > 3 && counttd < 35) {
+                td2 += '</tr>';
+            } else if (counttd > 35 && counttd < 42) {
+                td3 += '</tr>';
+            } else if (counttd > 42 && counttd < 60) {
+                td4 += '</tr>';
+            } else if (counttd > 60 && counttd < 74) {
+                td5 += '</tr>';
+            } else if (counttd > 74 && counttd < 85) {
+                td6 += '</tr>';
+            } else if (counttd > 85 && counttd < 88) {
+                td7 += '</tr>';
+            } else if (counttd > 88 && counttd < 91) {
+                td8 += '</tr>';
+            } else if (counttd > 91 && counttd < 94) {
+                td9 += '</tr>';
+            }
+
+            counttd++;
+        }
+
+        rows += th1;
+        rows += td1;
+        rows += th2;
+        rows += td2;
+        rows += th3;
+        rows += td3;
+        rows += th4;
+        rows += td4;
+        rows += th5;
+        rows += td5;
+        rows2 += th6;
+        rows2 += td6;
+        rows2 += th7;
+        rows2 += td7;
+        rows2 += th8;
+        rows2 += td8;
+        rows2 += th9;
+        rows2 += td9;
+
+
+        //------------------------------------------------------------------データの受け渡しへ
+        data = {
+            year: a,
+            content: rows,
+            content2: rows2,
+        };
+        res.render('baseball/orix', data);
+    })();
+
+});
 
 
 
@@ -530,8 +1641,916 @@ router.get('/hanshin', function (req, res, next) {    //────────
 
 
 
+router.get('/softbank', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────ソフトバンク選手一覧
+    var today = new Date();
+    var a = today.getFullYear();
+    var countth = 1;
+    var counttd = 1;
+
+    var th1 = '';
+    var th2 = '';
+    var th3 = '';
+    var th4 = '';
+    var th5 = '';
+    var th6 = '';
+    var th7 = '';
+    var th8 = '';
+    var th9 = '';
+
+    var td1 = '';
+    var td2 = '';
+    var td3 = '';
+    var td4 = '';
+    var td5 = '';
+    var td6 = '';
+    var td7 = '';
+    var td8 = '';
+    var td9 = '';
 
 
+    var rows = '';
+    var rows2 = '';
+    //─────────────────────────────────────────────────────────────────────ここからスクレイピング
+    const url = 'https://npb.jp/bis/teams/rst_h.html';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+
+        //thead取得部分
+        const t = await page.$$('.rosterdivlisttbl > table > tbody > tr');
+        th1 += '<tr>';
+        th2 += '<tr>';
+        th3 += '<tr>';
+        th4 += '<tr>';
+        th5 += '<tr>';
+        th6 += '<tr>';
+        th7 += '<tr>';
+        th8 += '<tr>';
+        th9 += '<tr>';
+        for (var e of t) {
+            const tt = await e.$$('th');
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (countth == 1) {
+                    th1 += '<th>' + html + '</th>';
+                } else if (countth == 3) {
+                    th2 += '<th>' + html + '</th>';
+                } else if (countth == 37) {
+                    th3 += '<th>' + html + '</th>';
+                } else if (countth == 46) {
+                    th4 += '<th>' + html + '</th>';
+                } else if (countth == 61) {
+                    th5 += '<th>' + html + '</th>';
+                } else if (countth == 74) {
+                    th6 += '<th>' + html + '</th>';
+                } else if (countth == 105) {
+                    th7 += '<th>' + html + '</th>';
+                } else if (countth == 110) {
+                    th8 += '<th>' + html + '</th>';
+                } else if (countth == 121) {
+                    th9 += '<th>' + html + '</th>';
+                }
+            }
+            // console.log(countth);
+            countth++;
+
+        }
+        th1 += '</tr>';
+        th2 += '</tr>';
+        th3 += '</tr>';
+        th4 += '</tr>';
+        th5 += '</tr>';
+        th6 += '</tr>';
+        th7 += '</tr>';
+        th8 += '</tr>';
+        th9 += '</tr>';
+
+        for (var e of t) {
+            const tt = await e.$$('td');
+            if (counttd == 2) {
+                td1 += '<tr>';
+            } else if (counttd > 3 && counttd < 37) {
+                td2 += '<tr>';
+            } else if (counttd > 37 && counttd < 46) {
+                td3 += '<tr>';
+            } else if (counttd > 46 && counttd < 61) {
+                td4 += '<tr>';
+            } else if (counttd > 61 && counttd < 74) {
+                td5 += '<tr>';
+            } else if (counttd > 74 && counttd < 105) {
+                td6 += '<tr>';
+            } else if (counttd > 105 && counttd < 110) {
+                td7 += '<tr>';
+            } else if (counttd > 110 && counttd < 121) {
+                td8 += '<tr>';
+            } else if (counttd > 121 && counttd < 132) {
+                td9 += '<tr>';
+            }
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (counttd == 2) {
+                    td1 += '<td>' + html + '</td>';
+                } else if (counttd > 3 && counttd < 37) {
+                    td2 += '<td>' + html + '</td>';
+                } else if (counttd > 37 && counttd < 46) {
+                    td3 += '<td>' + html + '</td>';
+                } else if (counttd > 46 && counttd < 61) {
+                    td4 += '<td>' + html + '</td>';
+                } else if (counttd > 61 && counttd < 74) {
+                    td5 += '<td>' + html + '</td>';
+                } else if (counttd > 74 && counttd < 105) {
+                    td6 += '<td>' + html + '</td>';
+                } else if (counttd > 105 && counttd < 110) {
+                    td7 += '<td>' + html + '</td>';
+                } else if (counttd > 110 && counttd < 121) {
+                    td8 += '<td>' + html + '</td>';
+                } else if (counttd > 121 && counttd < 132) {
+                    td9 += '<td>' + html + '</td>';
+                }
+            }
+            if (counttd == 2) {
+                td1 += '</tr>';
+            } else if (counttd > 3 && counttd < 37) {
+                td2 += '</tr>';
+            } else if (counttd > 37 && counttd < 46) {
+                td3 += '</tr>';
+            } else if (counttd > 46 && counttd < 61) {
+                td4 += '</tr>';
+            } else if (counttd > 61 && counttd < 74) {
+                td5 += '</tr>';
+            } else if (counttd > 74 && counttd < 105) {
+                td6 += '</tr>';
+            } else if (counttd > 105 && counttd < 110) {
+                td7 += '</tr>';
+            } else if (counttd > 110 && counttd < 121) {
+                td8 += '</tr>';
+            } else if (counttd > 121 && counttd < 132) {
+                td9 += '</tr>';
+            }
+
+            counttd++;
+        }
+
+        rows += th1;
+        rows += td1;
+        rows += th2;
+        rows += td2;
+        rows += th3;
+        rows += td3;
+        rows += th4;
+        rows += td4;
+        rows += th5;
+        rows += td5;
+        rows2 += th6;
+        rows2 += td6;
+        rows2 += th7;
+        rows2 += td7;
+        rows2 += th8;
+        rows2 += td8;
+        rows2 += th9;
+        rows2 += td9;
+
+
+        //------------------------------------------------------------------データの受け渡しへ
+        data = {
+            year: a,
+            content: rows,
+            content2: rows2,
+        };
+        res.render('baseball/softbank', data);
+    })();
+
+});
+
+
+
+
+
+
+
+
+
+
+router.get('/seibu', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────西部選手一覧
+    var today = new Date();
+    var a = today.getFullYear();
+    var countth = 1;
+    var counttd = 1;
+
+    var th1 = '';
+    var th2 = '';
+    var th3 = '';
+    var th4 = '';
+    var th5 = '';
+    var th6 = '';
+    var th7 = '';
+    var th8 = '';
+    var th9 = '';
+
+    var td1 = '';
+    var td2 = '';
+    var td3 = '';
+    var td4 = '';
+    var td5 = '';
+    var td6 = '';
+    var td7 = '';
+    var td8 = '';
+    var td9 = '';
+
+
+    var rows = '';
+    var rows2 = '';
+    //─────────────────────────────────────────────────────────────────────ここからスクレイピング
+    const url = 'https://npb.jp/bis/teams/rst_l.html';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+
+        //thead取得部分
+        const t = await page.$$('.rosterdivlisttbl > table > tbody > tr');
+        th1 += '<tr>';
+        th2 += '<tr>';
+        th3 += '<tr>';
+        th4 += '<tr>';
+        th5 += '<tr>';
+        th6 += '<tr>';
+        th7 += '<tr>';
+        th8 += '<tr>';
+        th9 += '<tr>';
+        for (var e of t) {
+            const tt = await e.$$('th');
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (countth == 1) {
+                    th1 += '<th>' + html + '</th>';
+                } else if (countth == 3) {
+                    th2 += '<th>' + html + '</th>';
+                } else if (countth == 33) {
+                    th3 += '<th>' + html + '</th>';
+                } else if (countth == 41) {
+                    th4 += '<th>' + html + '</th>';
+                } else if (countth == 60) {
+                    th5 += '<th>' + html + '</th>';
+                } else if (countth == 74) {
+                    th6 += '<th>' + html + '</th>';
+                } else if (countth == 84) {
+                    th7 += '<th>' + html + '</th>';
+                } else if (countth == 87) {
+                    th8 += '<th>' + html + '</th>';
+                } else if (countth == 89) {
+                    th9 += '<th>' + html + '</th>';
+                }
+            }
+            // console.log(countth);
+            countth++;
+
+        }
+        th1 += '</tr>';
+        th2 += '</tr>';
+        th3 += '</tr>';
+        th4 += '</tr>';
+        th5 += '</tr>';
+        th6 += '</tr>';
+        th7 += '</tr>';
+        th8 += '</tr>';
+        th9 += '</tr>';
+
+        for (var e of t) {
+            const tt = await e.$$('td');
+            if (counttd == 2) {
+                td1 += '<tr>';
+            } else if (counttd > 3 && counttd < 33) {
+                td2 += '<tr>';
+            } else if (counttd > 33 && counttd < 41) {
+                td3 += '<tr>';
+            } else if (counttd > 41 && counttd < 60) {
+                td4 += '<tr>';
+            } else if (counttd > 60 && counttd < 74) {
+                td5 += '<tr>';
+            } else if (counttd > 74 && counttd < 84) {
+                td6 += '<tr>';
+            } else if (counttd > 84 && counttd < 87) {
+                td7 += '<tr>';
+            } else if (counttd > 87 && counttd < 89) {
+                td8 += '<tr>';
+            } else if (counttd > 89 && counttd < 93) {
+                td9 += '<tr>';
+            }
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (counttd == 2) {
+                    td1 += '<td>' + html + '</td>';
+                } else if (counttd > 3 && counttd < 33) {
+                    td2 += '<td>' + html + '</td>';
+                } else if (counttd > 33 && counttd < 41) {
+                    td3 += '<td>' + html + '</td>';
+                } else if (counttd > 41 && counttd < 60) {
+                    td4 += '<td>' + html + '</td>';
+                } else if (counttd > 60 && counttd < 74) {
+                    td5 += '<td>' + html + '</td>';
+                } else if (counttd > 74 && counttd < 84) {
+                    td6 += '<td>' + html + '</td>';
+                } else if (counttd > 84 && counttd < 87) {
+                    td7 += '<td>' + html + '</td>';
+                } else if (counttd > 87 && counttd < 89) {
+                    td8 += '<td>' + html + '</td>';
+                } else if (counttd > 89 && counttd < 93) {
+                    td9 += '<td>' + html + '</td>';
+                }
+            }
+            if (counttd == 2) {
+                td1 += '</tr>';
+            } else if (counttd > 3 && counttd < 33) {
+                td2 += '</tr>';
+            } else if (counttd > 33 && counttd < 41) {
+                td3 += '</tr>';
+            } else if (counttd > 41 && counttd < 60) {
+                td4 += '</tr>';
+            } else if (counttd > 60 && counttd < 74) {
+                td5 += '</tr>';
+            } else if (counttd > 74 && counttd < 84) {
+                td6 += '</tr>';
+            } else if (counttd > 84 && counttd < 87) {
+                td7 += '</tr>';
+            } else if (counttd > 87 && counttd < 89) {
+                td8 += '</tr>';
+            } else if (counttd > 89 && counttd < 93) {
+                td9 += '</tr>';
+            }
+
+            counttd++;
+        }
+
+        rows += th1;
+        rows += td1;
+        rows += th2;
+        rows += td2;
+        rows += th3;
+        rows += td3;
+        rows += th4;
+        rows += td4;
+        rows += th5;
+        rows += td5;
+        rows2 += th6;
+        rows2 += td6;
+        rows2 += th7;
+        rows2 += td7;
+        rows2 += th8;
+        rows2 += td8;
+        rows2 += th9;
+        rows2 += td9;
+
+
+        //------------------------------------------------------------------データの受け渡しへ
+        data = {
+            year: a,
+            content: rows,
+            content2: rows2,
+        };
+        res.render('baseball/seibu', data);
+    })();
+
+});
+
+
+
+
+
+
+router.get('/rakuten', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────楽天選手一覧
+    var today = new Date();
+    var a = today.getFullYear();
+    var countth = 1;
+    var counttd = 1;
+
+    var th1 = '';
+    var th2 = '';
+    var th3 = '';
+    var th4 = '';
+    var th5 = '';
+    var th6 = '';
+    var th7 = '';
+    var th8 = '';
+    var th9 = '';
+
+    var td1 = '';
+    var td2 = '';
+    var td3 = '';
+    var td4 = '';
+    var td5 = '';
+    var td6 = '';
+    var td7 = '';
+    var td8 = '';
+    var td9 = '';
+
+
+    var rows = '';
+    var rows2 = '';
+    //─────────────────────────────────────────────────────────────────────ここからスクレイピング
+    const url = 'https://npb.jp/bis/teams/rst_e.html';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+
+        //thead取得部分
+        const t = await page.$$('.rosterdivlisttbl > table > tbody > tr');
+        th1 += '<tr>';
+        th2 += '<tr>';
+        th3 += '<tr>';
+        th4 += '<tr>';
+        th5 += '<tr>';
+        th6 += '<tr>';
+        th7 += '<tr>';
+        th8 += '<tr>';
+        th9 += '<tr>';
+        for (var e of t) {
+            const tt = await e.$$('th');
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (countth == 1) {
+                    th1 += '<th>' + html + '</th>';
+                } else if (countth == 3) {
+                    th2 += '<th>' + html + '</th>';
+                } else if (countth == 38) {
+                    th3 += '<th>' + html + '</th>';
+                } else if (countth == 45) {
+                    th4 += '<th>' + html + '</th>';
+                } else if (countth == 62) {
+                    th5 += '<th>' + html + '</th>';
+                } else if (countth == 74) {
+                    th6 += '<th>' + html + '</th>';
+                } else if (countth == 82) {
+                    th7 += '<th>' + html + '</th>';
+                } else if (countth == 85) {
+                    th8 += '<th>' + html + '</th>';
+                } else if (countth == 90) {
+                    th9 += '<th>' + html + '</th>';
+                }
+            }
+            // console.log(countth);
+            countth++;
+
+        }
+        th1 += '</tr>';
+        th2 += '</tr>';
+        th3 += '</tr>';
+        th4 += '</tr>';
+        th5 += '</tr>';
+        th6 += '</tr>';
+        th7 += '</tr>';
+        th8 += '</tr>';
+        th9 += '</tr>';
+
+        for (var e of t) {
+            const tt = await e.$$('td');
+            if (counttd == 2) {
+                td1 += '<tr>';
+            } else if (counttd > 3 && counttd < 38) {
+                td2 += '<tr>';
+            } else if (counttd > 38 && counttd < 45) {
+                td3 += '<tr>';
+            } else if (counttd > 45 && counttd < 62) {
+                td4 += '<tr>';
+            } else if (counttd > 62 && counttd < 74) {
+                td5 += '<tr>';
+            } else if (counttd > 74 && counttd < 82) {
+                td6 += '<tr>';
+            } else if (counttd > 82 && counttd < 85) {
+                td7 += '<tr>';
+            } else if (counttd > 85 && counttd < 90) {
+                td8 += '<tr>';
+            } else if (counttd > 90 && counttd < 93) {
+                td9 += '<tr>';
+            }
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (counttd == 2) {
+                    td1 += '<td>' + html + '</td>';
+                } else if (counttd > 3 && counttd < 38) {
+                    td2 += '<td>' + html + '</td>';
+                } else if (counttd > 38 && counttd < 45) {
+                    td3 += '<td>' + html + '</td>';
+                } else if (counttd > 45 && counttd < 62) {
+                    td4 += '<td>' + html + '</td>';
+                } else if (counttd > 62 && counttd < 74) {
+                    td5 += '<td>' + html + '</td>';
+                } else if (counttd > 74 && counttd < 82) {
+                    td6 += '<td>' + html + '</td>';
+                } else if (counttd > 82 && counttd < 85) {
+                    td7 += '<td>' + html + '</td>';
+                } else if (counttd > 85 && counttd < 90) {
+                    td8 += '<td>' + html + '</td>';
+                } else if (counttd > 90 && counttd < 93) {
+                    td9 += '<td>' + html + '</td>';
+                }
+            }
+            if (counttd == 2) {
+                td1 += '</tr>';
+            } else if (counttd > 3 && counttd < 38) {
+                td2 += '</tr>';
+            } else if (counttd > 38 && counttd < 45) {
+                td3 += '</tr>';
+            } else if (counttd > 45 && counttd < 62) {
+                td4 += '</tr>';
+            } else if (counttd > 62 && counttd < 74) {
+                td5 += '</tr>';
+            } else if (counttd > 74 && counttd < 82) {
+                td6 += '</tr>';
+            } else if (counttd > 82 && counttd < 85) {
+                td7 += '</tr>';
+            } else if (counttd > 85 && counttd < 90) {
+                td8 += '</tr>';
+            } else if (counttd > 90 && counttd < 93) {
+                td9 += '</tr>';
+            }
+            counttd++;
+        }
+
+        rows += th1;
+        rows += td1;
+        rows += th2;
+        rows += td2;
+        rows += th3;
+        rows += td3;
+        rows += th4;
+        rows += td4;
+        rows += th5;
+        rows += td5;
+        rows2 += th6;
+        rows2 += td6;
+        rows2 += th7;
+        rows2 += td7;
+        rows2 += th8;
+        rows2 += td8;
+        rows2 += th9;
+        rows2 += td9;
+
+
+        //------------------------------------------------------------------データの受け渡しへ
+        data = {
+            year: a,
+            content: rows,
+            content2: rows2,
+        };
+        res.render('baseball/rakuten', data);
+    })();
+
+});
+
+
+
+
+router.get('/lotte', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────ロッテ選手一覧
+    var today = new Date();
+    var a = today.getFullYear();
+    var countth = 1;
+    var counttd = 1;
+
+    var th1 = '';
+    var th2 = '';
+    var th3 = '';
+    var th4 = '';
+    var th5 = '';
+    var th6 = '';
+    var th7 = '';
+    var th8 = '';
+
+    var td1 = '';
+    var td2 = '';
+    var td3 = '';
+    var td4 = '';
+    var td5 = '';
+    var td6 = '';
+    var td7 = '';
+    var td8 = '';
+
+
+    var rows = '';
+    var rows2 = '';
+    //─────────────────────────────────────────────────────────────────────ここからスクレイピング
+    const url = 'https://npb.jp/bis/teams/rst_m.html';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+
+        //thead取得部分
+        const t = await page.$$('.rosterdivlisttbl > table > tbody > tr');
+        th1 += '<tr>';
+        th2 += '<tr>';
+        th3 += '<tr>';
+        th4 += '<tr>';
+        th5 += '<tr>';
+        th6 += '<tr>';
+        th7 += '<tr>';
+        th8 += '<tr>';
+        for (var e of t) {
+            const tt = await e.$$('th');
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (countth == 1) {
+                    th1 += '<th>' + html + '</th>';
+                } else if (countth == 3) {
+                    th2 += '<th>' + html + '</th>';
+                } else if (countth == 41) {
+                    th3 += '<th>' + html + '</th>';
+                } else if (countth == 48) {
+                    th4 += '<th>' + html + '</th>';
+                } else if (countth == 62) {
+                    th5 += '<th>' + html + '</th>';
+                } else if (countth == 75) {
+                    th6 += '<th>' + html + '</th>';
+                } else if (countth == 84) {
+                    th7 += '<th>' + html + '</th>';
+                } else if (countth == 87) {
+                    th8 += '<th>' + html + '</th>';
+                }
+            }
+            // console.log(countth);
+            countth++;
+
+        }
+        th1 += '</tr>';
+        th2 += '</tr>';
+        th3 += '</tr>';
+        th4 += '</tr>';
+        th5 += '</tr>';
+        th6 += '</tr>';
+        th7 += '</tr>';
+        th8 += '</tr>';
+
+        for (var e of t) {
+            const tt = await e.$$('td');
+            if (counttd == 2) {
+                td1 += '<tr>';
+            } else if (counttd > 3 && counttd < 41) {
+                td2 += '<tr>';
+            } else if (counttd > 41 && counttd < 48) {
+                td3 += '<tr>';
+            } else if (counttd > 48 && counttd < 62) {
+                td4 += '<tr>';
+            } else if (counttd > 62 && counttd < 75) {
+                td5 += '<tr>';
+            } else if (counttd > 75 && counttd < 84) {
+                td6 += '<tr>';
+            } else if (counttd > 84 && counttd < 87) {
+                td7 += '<tr>';
+            } else if (counttd > 87 && counttd < 92) {
+                td8 += '<tr>';
+            }
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (counttd == 2) {
+                    td1 += '<td>' + html + '</td>';
+                } else if (counttd > 3 && counttd < 41) {
+                    td2 += '<td>' + html + '</td>';
+                } else if (counttd > 41 && counttd < 48) {
+                    td3 += '<td>' + html + '</td>';
+                } else if (counttd > 48 && counttd < 62) {
+                    td4 += '<td>' + html + '</td>';
+                } else if (counttd > 62 && counttd < 75) {
+                    td5 += '<td>' + html + '</td>';
+                } else if (counttd > 75 && counttd < 84) {
+                    td6 += '<td>' + html + '</td>';
+                } else if (counttd > 84 && counttd < 87) {
+                    td7 += '<td>' + html + '</td>';
+                } else if (counttd > 87 && counttd < 92) {
+                    td8 += '<td>' + html + '</td>';
+                }
+            }
+            // console.log(countth);
+            if (counttd == 2) {
+                td1 += '</tr>';
+            } else if (counttd > 3 && counttd < 41) {
+                td2 += '</tr>';
+            } else if (counttd > 41 && counttd < 48) {
+                td3 += '</tr>';
+            } else if (counttd > 48 && counttd < 62) {
+                td4 += '</tr>';
+            } else if (counttd > 62 && counttd < 75) {
+                td5 += '</tr>';
+            } else if (counttd > 75 && counttd < 84) {
+                td6 += '</tr>';
+            } else if (counttd > 84 && counttd < 87) {
+                td7 += '</tr>';
+            } else if (counttd > 87 && counttd < 92) {
+                td8 += '</tr>';
+            }
+
+            counttd++;
+        }
+
+        rows += th1;
+        rows += td1;
+        rows += th2;
+        rows += td2;
+        rows += th3;
+        rows += td3;
+        rows += th4;
+        rows += td4;
+        rows += th5;
+        rows += td5;
+        rows2 += th6;
+        rows2 += td6;
+        rows2 += th7;
+        rows2 += td7;
+        rows2 += th8;
+        rows2 += td8;
+
+
+        //------------------------------------------------------------------データの受け渡しへ
+        data = {
+            year: a,
+            content: rows,
+            content2: rows2,
+        };
+        res.render('baseball/lotte', data);
+    })();
+
+});
+
+
+
+
+
+
+
+
+router.get('/hokkaido', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────日ハム選手一覧
+    var today = new Date();
+    var a = today.getFullYear();
+    var countth = 1;
+    var counttd = 1;
+
+    var th1 = '';
+    var th2 = '';
+    var th3 = '';
+    var th4 = '';
+    var th5 = '';
+    var th6 = '';
+    var th7 = '';
+
+    var td1 = '';
+    var td2 = '';
+    var td3 = '';
+    var td4 = '';
+    var td5 = '';
+    var td6 = '';
+    var td7 = '';
+
+
+
+    var rows = '';
+    var rows2 = '';
+    //─────────────────────────────────────────────────────────────────────ここからスクレイピング
+    const url = 'https://npb.jp/bis/teams/rst_f.html';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+
+        //thead取得部分
+        const t = await page.$$('.rosterdivlisttbl > table > tbody > tr');
+        th1 += '<tr>';
+        th2 += '<tr>';
+        th3 += '<tr>';
+        th4 += '<tr>';
+        th5 += '<tr>';
+        th6 += '<tr>';
+        th7 += '<tr>';
+
+        for (var e of t) {
+            const tt = await e.$$('th');
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (countth == 1) {
+                    th1 += '<th>' + html + '</th>';
+                } else if (countth == 3) {
+                    th2 += '<th>' + html + '</th>';
+                } else if (countth == 42) {
+                    th3 += '<th>' + html + '</th>';
+                } else if (countth == 51) {
+                    th4 += '<th>' + html + '</th>';
+                } else if (countth == 68) {
+                    th5 += '<th>' + html + '</th>';
+                } else if (countth == 76) {
+                    th6 += '<th>' + html + '</th>';
+                } else if (countth == 85) {
+                    th7 += '<th>' + html + '</th>';
+                }
+            }
+            // console.log(countth);
+            countth++;
+
+        }
+        th1 += '</tr>';
+        th2 += '</tr>';
+        th3 += '</tr>';
+        th4 += '</tr>';
+        th5 += '</tr>';
+        th6 += '</tr>';
+        th7 += '</tr>';
+
+        for (var e of t) {
+            const tt = await e.$$('td');
+            if (counttd == 2) {
+                td1 += '<tr>';
+            } else if (counttd > 3 && counttd < 42) {
+                td2 += '<tr>';
+            } else if (counttd > 42 && counttd < 51) {
+                td3 += '<tr>';
+            } else if (counttd > 51 && counttd < 68) {
+                td4 += '<tr>';
+            } else if (counttd > 68 && counttd < 76) {
+                td5 += '<tr>';
+            } else if (counttd > 76 && counttd < 85) {
+                td6 += '<tr>';
+            } else if (counttd > 85 && counttd < 90) {
+                td7 += '<tr>';
+            }
+            for (var ee of tt) {
+                const html = await page.evaluate(body => body.innerHTML, ee);
+                // console.log(html);
+                if (counttd == 2) {
+                    td1 += '<td>' + html + '</td>';
+                } else if (counttd > 3 && counttd < 42) {
+                    td2 += '<td>' + html + '</td>';
+                } else if (counttd > 42 && counttd < 51) {
+                    td3 += '<td>' + html + '</td>';
+                } else if (counttd > 51 && counttd < 68) {
+                    td4 += '<td>' + html + '</td>';
+                } else if (counttd > 68 && counttd < 76) {
+                    td5 += '<td>' + html + '</td>';
+                } else if (counttd > 76 && counttd < 85) {
+                    td6 += '<td>' + html + '</td>';
+                } else if (counttd > 85 && counttd < 90) {
+                    td7 += '<td>' + html + '</td>';
+                }
+            }
+            // console.log(countth);
+            if (counttd == 2) {
+                td1 += '</tr>';
+            } else if (counttd > 3 && counttd < 42) {
+                td2 += '</tr>';
+            } else if (counttd > 42 && counttd < 51) {
+                td3 += '</tr>';
+            } else if (counttd > 51 && counttd < 68) {
+                td4 += '</tr>';
+            } else if (counttd > 68 && counttd < 76) {
+                td5 += '</tr>';
+            } else if (counttd > 76 && counttd < 85) {
+                td6 += '</tr>';
+            } else if (counttd > 85 && counttd < 90) {
+                td7 += '</tr>';
+            }
+
+            counttd++;
+        }
+
+        rows += th1;
+        rows += td1;
+        rows += th2;
+        rows += td2;
+        rows += th3;
+        rows += td3;
+        rows += th4;
+        rows += td4;
+        rows += th5;
+        rows += td5;
+        rows2 += th6;
+        rows2 += td6;
+        rows2 += th7;
+        rows2 += td7;
+
+
+
+        //------------------------------------------------------------------データの受け渡しへ
+        data = {
+            year: a,
+            content: rows,
+            content2: rows2,
+        };
+        res.render('baseball/hokkaido', data);
+    })();
+
+});
 
 
 
