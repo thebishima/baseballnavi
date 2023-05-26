@@ -8,7 +8,7 @@ var session = require('express-session');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var baseballRouter = require('./routes/baseball');
-var forBeginners = require('./routes/forBeginners');
+// var forBeginners = require('./routes/forBeginners');
 
 var app = express();
 

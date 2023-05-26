@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        crossorigin="anonymous">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <title>
+    </title>
+</head>
+<h3>阪神タイガース</h3>
+<h5><%- year%>年度 選手一覧</h5>
+<br>
+<h5>・支配下登録選手</h5>
+<table class="table">
+    <%- content%>
+</table>
+<h5>・育成選手</h5>
+<table class="table">
+    <%- content2%>
+</table>
+
+<br>
+<div class="text-center">
+    <a href="./seiseki"><button type="button" class="btn btn-outline-primary btn-lg">戻る</button></a>
+</div>
+<div role="main">
+    <table class="table">
+    </table>
+
+</div>
+</body>
+
+</html>
