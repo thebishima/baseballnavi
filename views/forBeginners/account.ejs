@@ -28,13 +28,18 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/forBeginners/loginHome">アカウント情報</a>
+            <a class="nav-link active" aria-current="page" href="/forBeginners/account">アカウント</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/forBeginners/calender">日程表</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/forBeginners/guide/guideHome">観戦ガイド</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
-
   <p>こんにちは、<%= name %>さん</p>
 
   <div class="row text-center">
@@ -71,7 +76,7 @@
           </select>
         </div>
         <div>
-          <input type="submit" value="送信" class="submit btn btn-primary">
+          <input type="submit" value="変更" class="submit btn btn-primary">
         </div>
       </form>
     </div>
@@ -80,7 +85,7 @@
 
   <div class="row text-center">
     <div class="col-md">
-      <button id="btn" class="submit btn btn-primary" onclick="logout()">logout</button>
+      <button id="btn" class="submit btn btn-primary" onclick="logout()">ログアウト</button>
     </div>
   </div>
 

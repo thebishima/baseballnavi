@@ -65,7 +65,6 @@ router.post('/signup', (req, res, next) => {
     db.get('select max(ID) as id from account ', (err, row) => {
       if (row != undefined) {
         count = row.id + 1;
-        console.log(count);
       }
     });
 
@@ -174,113 +173,236 @@ router.get("/deletecookie", function (req, res, next) {
 let teamArray = { '東京ヤクルトスワローズ': 'ヤクルト', '横浜DeNAベイスターズ': 'DeNA', '阪神タイガース': '阪神', '読売ジャイアンツ': '巨人', '広島東洋カープ': '広島', '中日ドラゴンズ': '中日', 'オリックス・バファローズ': 'オリックス', '福岡ソフトバンクホークス': 'ソフトバンク', '埼玉西武ライオンズ': '西武', '東北楽天ゴールデンイーグルス': '楽天', '千葉ロッテマリーンズ': 'ロッテ', '北海道日本ハムファイターズ': '日本ハム' };
 let teamArrayReverse = { 'ヤクルト': '東京ヤクルトスワローズ', 'DeNA': '横浜DeNAベイスターズ', '阪神': '阪神タイガース', '巨人': '読売ジャイアンツ', '広島': '広島東洋カープ', '中日': '中日ドラゴンズ', 'オリックス': 'オリックス・バファローズ', 'ソフトバンク': '福岡ソフトバンクホークス', '西武': '埼玉西武ライオンズ', '楽天': '東北楽天ゴールデンイーグルス', 'ロッテ': '千葉ロッテマリーンズ', '日本ハム': '北海道日本ハムファイターズ' };
 const homeStudium = { '北海道日本ハムファイターズ': '北広島駅', '東北楽天ゴールデンイーグルス': '宮城野原', '千葉ロッテマリーンズ': '海浜幕張', '読売ジャイアンツ': '水道橋駅', '東京ヤクルトスワローズ': '外苑前駅', '横浜DeNAベイスターズ': '関内', '埼玉西武ライオンズ': '西武球場前駅', '中日ドラゴンズ': 'ナゴヤドーム前矢田', 'オリックス・バファローズ': 'ドーム前千代崎', '阪神タイガース': '甲子園駅', '広島東洋カープ': '広島駅', '福岡ソフトバンクホークス': '唐人町駅' };
-const homeStation = { '神宮': '外苑前駅', 'バンテリンドーム': 'ナゴヤドーム前矢田', '甲子園': '甲子園駅', 'マツダスタジアム': '広島駅', '横浜': '関内', '東京ドーム': '水道橋駅', 'PayPayドーム': '唐人町駅', 'ベルーナドーム': '西武球場前駅', 'エスコンF': '北広島駅', '楽天モバイル': '宮城野原', 'ZOZOマリン': '海浜幕張', '京セラD大阪': 'ドーム前千代崎' };
+const homeStation = { '神宮': '外苑前駅', 'バンテリンドーム': 'ナゴヤドーム前矢田', '甲子園': '甲子園駅', 'マツダスタジアム': '広島駅', '横浜': '関内', '東京ドーム': '水道橋駅', 'PayPayドーム': '唐人町駅', 'ベルーナドーム': '西武球場前駅', 'エスコンＦ': '北広島駅', '楽天モバイル': '宮城野原', 'ZOZOマリン': '海浜幕張', '京セラD大阪': 'ドーム前千代崎' };
 
 router.get('/calender', function (req, res, next) {
   let accountTeam = req.cookies.team;
   let rows = '';
-
-  db.serialize(() => {
-    db.each('select * from calender where team = ?', [teamArray[accountTeam]], (err, row) => {
-      if (row != undefined) {
-        rows += '<input type="radio" value="' + row.date + '" name="postDate">' + row.date + row.team + row.vsteam + row.location + row.time + '<br>';
-      }
-    }, (err, row) => {
-      let data = {
-        content: accountTeam,
-        teamInfo: rows
-      };
-      res.render('forBeginners/calender', data);
-    });
-  });
-});
-
-
-// 経路検索ページ
-router.post('/route', function (req, res, next) {
-  const postDate = req.body.postDate;
-  const cookieTeam = teamArray[req.cookies.team];
   const from = req.cookies.station;
   let m, d, ddate, dtime, hh, m1, m2, dminute, station, url, date;
+  let monthCounter = 3;
+  let month = 3;
+
+
+  rows += '<div class="tab-pane fade show active" id="m' + month + '" role="tabpanel" aria-labelledby="m' + month + '-tab"><table class="table table-striped table-hover text-center"><tr><th>試合日</th><th>開始時間</th><th>対戦相手</th><th>球場</th><th>経路</th></tr>';
+
+  if (accountTeam != undefined) {
+    db.serialize(() => {
+      db.each('select * from calender where team = ?', [teamArray[accountTeam]], (err, row) => {
+        if (row != undefined) {
+          month = row.date.substring(0, 1);
+          if (month == '1') {
+            month = '10';
+          }
+
+          if (month != monthCounter) {
+            monthCounter++;
+            rows += '</table></div><div class="tab-pane fade" id="m' + month + '" role="tabpanel" aria-labelledby="m' + month + '-tab"><table class="table table-striped table-hover text-center"><tr><th>試合日</th><th>開始時間</th><th>対戦相手</th><th>球場</th><th>経路</th></tr>';
+          }
+
+          ddate = row.date;
+          ddate = ddate.split(/月|日/g);
+          m = ddate[0];
+          if (m < 10) {
+            m = '0' + m;
+          }
+          d = ddate[1];
+          if (d < 10) {
+            d = '0' + d;
+          }
+
+          dtime = row.time;
+          dtime = dtime.split(':');
+          hh = dtime[0] - 1;
+          if (hh < 10) {
+            hh = '0' + hh;
+          }
+          dminute = dtime[1];
+          dminute = dminute.slice('');
+          m1 = dminute[0];
+          m2 = dminute[1];
+
+          station = homeStation[row.location];
+
+          url = '<a href="https://transit.yahoo.co.jp/search/result?from=' + from + '&to=%' + station + '&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y=2023&m=' + m + '&d=' + d + '&hh=' + hh + '&m1=' + m1 + '&m2=' + m2 + '&type=4&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1" target="_blank">経路検索</a>';
+
+          rows += '<tr><td>' + row.date + '</td><td>' + row.time + '</td><td>' + row.vsteam + '</td><td>' + row.location + '</td><td>' + url + '</td></tr>';
+        }
+      }, (err, row) => {
+        if (month == '9') {
+          month = 10;
+          rows += '</table></div><div class="tab-pane fade" id="m' + month + '" role="tabpanel" aria-labelledby="m' + month + '-tab"><table class="table table-striped table-hover text-center"><tr><th>試合日</th><th>開始時間</th><th>対戦相手</th><th>球場</th><th>経路</th></tr><tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>'
+        }
+
+        rows += '</table></div><footer><p class="copyright">&copy;BaseballNavi</p></footer>';
+        let data = {
+          content: accountTeam + 'の試合一覧',
+          teamInfo: rows
+        };
+        res.render('forBeginners/calender', data);
+      });
+    });
+  }
+
+
+
+
+
+
+
+
+
+  else {
+    let data = {
+      content: '好きなチームを登録してください。<br>　↓　↓　↓',
+      teamInfo: '<a href="/forBeginners/loginHome">ログインページ</a>へ'
+    };
+    res.render('forBeginners/calender', data);
+  }
+
+});
+
+
+
+// ガイド
+router.get('/guide/guideHome', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/guideHome', data);
+});
+
+
+router.get('/guide/ticket', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/ticket', data);
+});
+
+
+router.get('/guide/swallows', function (req, res, next) {
+  let text = 'コメントが投稿されていません。'
+  // db.serialize(() => {
+  //   db.each('select * from comment', (err, row) => {
+  //     if (row != undefined) {
+  //       text += '<h3>' + row.name + ':' + row.time + '</h3><p>' + row.comment + '</p><hr>';
+  //     }
+  //   });
+  // });
+
+
+  var data = {
+    comment: text
+  };
+  res.render('forBeginners/guide/swallows', data);
+});
+
+
+router.post('/guide/swallows', function (req, res, next) {
+  let commentCounter = 1;
+  let id = commentCounter;
+  let comment = req.body.comment;
+  let name = req.cookies.name;
+  if (name == '') {
+    name = '名無し';
+  }
+  let text = '';
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let seconds = date.getSeconds();
+  let time = year + '年' + month + '月' + day + '日' + hours + '時' + minutes + '分' + seconds + '秒';
 
   db.serialize(() => {
-    db.each('select * from calender where team = ? and date = ?', [cookieTeam, postDate], (err, row) => {
+    db.get('select max(id) as id from comment', (err, row) => {
       if (row != undefined) {
-        date = row.date + row.time + 'VS' + row.vsteam + 'in' + row.location;
+        commentCounter = row.id + 1;
+      }
+    });
 
-        ddate = row.date;
-        ddate = ddate.split(/月|日/g);
-        m = ddate[0];
-        if (m < 10) {
-          m = '0' + m;
-        }
-        d = ddate[1];
-        if (d < 10) {
-          d = '0' + d;
-        }
-
-        dtime = row.time;
-        dtime = dtime.split(':');
-        hh = dtime[0] - 1;
-        if (hh < 10) {
-          hh = '0' + hh;
-        }
-        dminute = dtime[1];
-        dminute = dminute.slice('');
-        m1 = dminute[0];
-        m2 = dminute[1];
-
-        station = homeStation[row.location];
-
-        url = '<a href="https://transit.yahoo.co.jp/search/result?from=' + from + '&to=%' + station + '&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y=2023&m=' + m + '&d=' + d + '&hh=' + hh + '&m1=' + m1 + '&m2=' + m2 + '&type=4&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1" target="_blank">経路検索</a>';
+    db.run('insert into comment (id, time, name, comment) values (?, ?, ?, ?)', commentCounter, time, name, comment);
+    db.each('select * from comment', (err, row) => {
+      if (row != undefined) {
+        text += '<h5>' + row.name + ':' + row.time + '</h5><p>' + row.comment + '</p><hr>';
+        console.log(text);
       }
     }, (err, row) => {
-      let data = {
-        targetData: date,
-        url: url
+      var data = {
+        comment: text
       };
-      res.render('forBeginners/route', data);
+      res.render('forBeginners/guide/swallows', data);
     });
   });
 });
 
 
 
-// スクレイピング用ページ　触るな！
-// router.get('/example', (req, res, next) => {
-//   let wholedate = ['3月31日(金)','阪神','京セラD大阪','18:00','4月1日(土)','阪神','京セラD大阪','14:00','4月2日(日)','阪神','京セラD大阪','14:00','4月4日(火)','巨人','横浜','18:30','4月5日(水)','巨人','横浜','18:00','4月6日(木)','巨人','横浜','18:00','4月7日(金)','中日','横浜','18:00','4月8日(土)','中日','横浜','14:00','4月9日(日)','中日','横浜','14:00','4月11日(火)','ヤクルト','神宮','18:00','4月12日(水)','ヤクルト','神宮','18:00','4月14日(金)','阪神','横浜','18:00','4月15日(土)','阪神','横浜','14:00','4月16日(日)','阪神','横浜','14:00','4月18日(火)','巨人','長崎','18:00','4月19日(水)','巨人','佐賀','18:00','4月21日(金)','広島','マツダスタジアム','18:00','4月22日(土)','広島','マツダスタジアム','14:00','4月23日(日)','広島','マツダスタジアム','13:30','4月25日(火)','ヤクルト','横浜','17:45','4月26日(水)','ヤクルト','横浜','17:45','4月27日(木)','ヤクルト','横浜','17:45','4月28日(金)','中日','バンテリンドーム','18:00','4月29日(土)','中日','バンテリンドーム','14:00','4月30日(日)','中日','バンテリンドーム','14:00','5月2日(火)','広島','横浜','18:00','5月3日(水)','広島','横浜','14:00','5月4日(木)','広島','横浜','14:00','5月5日(金)','ヤクルト','神宮','14:00','5月6日(土)','ヤクルト','神宮','18:00','5月7日(日)','ヤクルト','神宮','18:00','5月9日(火)','巨人','新潟','18:00','5月11日(木)','巨人','横浜','18:00','5月12日(金)','阪神','甲子園','18:00','5月13日(土)','阪神','甲子園','14:00','5月14日(日)','阪神','甲子園','14:00','5月16日(火)','広島','横浜','18:00','5月17日(水)','広島','横浜','18:00','5月18日(木)','広島','横浜','18:00','5月19日(金)','ヤクルト','横浜','18:00','5月20日(土)','ヤクルト','横浜','14:00','5月21日(日)','ヤクルト','横浜','14:00','5月23日(火)','巨人','東京ドーム','18:00','5月24日(水)','巨人','東京ドーム','18:00','5月25日(木)','巨人','東京ドーム','18:00','5月26日(金)','中日','バンテリンドーム','18:00','5月27日(土)','中日','バンテリンドーム','14:00','5月28日(日)','中日','バンテリンドーム','14:00','5月30日(火)','楽天','楽天モバイル','18:00','5月31日(水)','楽天','楽天モバイル','18:00','6月1日(木)','楽天','楽天モバイル','18:00','6月2日(金)','西武','横浜','18:00','6月3日(土)','西武','横浜','14:00','6月4日(日)','西武','横浜','14:00','6月6日(火)','ソフトバンク','PayPayドーム','18:00','6月7日(水)','ソフトバンク','PayPayドーム','18:00','6月8日(木)','ソフトバンク','PayPayドーム','18:00','6月9日(金)','オリックス','京セラD大阪','18:00','6月10日(土)','オリックス','京セラD大阪','14:00','6月11日(日)','オリックス','京セラD大阪','13:00','6月13日(火)','日本ハム','横浜','18:00','6月14日(水)','日本ハム','横 浜','18:00','6月15日(木)','日本ハム','横浜','18:00','6月16日(金)','ロッテ','横浜','18:00','6月17日(土)','ロッテ','横浜','14:00','6月18日(日)','ロッテ','横浜','14:00','6月23日(金)','阪神','横浜','18:00','6月24日(土)','阪神','横浜','14:00','6月25日(日)','阪神','横浜','14:00','6月27日(火)','広島','マツダスタジアム','18:00','6月28日(水)','広島','マツダスタジアム','18:00','6月29日(木)','広島','マツダスタジアム','18:00','6月30日(金)','中日','横浜','18:00','7月1日(土)','中日','横浜','14:00','7月2日(日)','中日','横浜','14:00','7月4日(火)','ヤクルト','横浜','18:00','7月5日(水)','ヤクルト','横浜','18:00','7月6日(木)','ヤクルト','横浜','18:00','7月7日(金)','巨人','東京ドーム','18:00','7月8日(土)','巨人','東京ドーム','18:00','7月9日(日)','巨人','東京ドーム','14:00','7月11日(火)','阪神','倉敷','18:00','7月12日(水)','阪神','甲子園','18:00','7月13日(木)','阪神','甲子園','18:00','7月15日(土)','広島','横浜','17:00','7月16日(日)','広島','横浜','17:00','7月17日(月)','広島','横浜','17:00','7月22日(土)','巨人','横浜','18:00','7月23日(日)','巨人','横浜','17:00','7月25日(火)','中日','バンテリンドーム','18:00','7月26日(水)','中日','バンテリンドーム','18:00','7月27日(木)','中日','バンテリンドーム','18:00','7月28日(金)','ヤクルト','神宮','18:00','7月29日(土)','ヤクルト','神宮','18:00','7月30日(日)','ヤクルト','神宮','18:00','8月1日(火)','広島','マツダスタジアム','18:00','8月2日(水)','広島','マツダスタジアム','18:00','8月3日(木)','広島','マツ ダスタジアム','18:00','8月4日(金)','阪神','横浜','17:45','8月5日(土)','阪神','横浜','17:00','8月6日(日)','阪神','横浜','17:00','8月8日(火)','中日','横浜','17:45','8月9日(水)','中日','横浜','17:45','8月10日(木)','中日','横浜','17:45','8月11 日(金)','巨人','東京ドーム','14:00','8月12日(土)','巨人','東京ドーム','14:00','8月13日(日)','巨人','東京ドーム','14:00','8月15日(火)','ヤクルト','神宮','18:00','8月16日(水)','ヤクルト','神宮','18:00','8月17日(木)','ヤクルト','神宮','18:00','8月18日(金)','阪神','横浜','18:00','8月19日(土)','阪神','横浜','18:00','8月20日(日)','阪神','横浜','17:00','8月22日(火)','広島','横浜','18:00','8月23日(水)','広島','横浜','18:00','8月24日(木)','広島','横浜','18:00','8月25日(金)','中日','バンテリンドーム','18:00','8月26日(土)','中日','バンテリンドーム','14:00','8月27日(日)','中日','バンテリンドーム','14:00','8月29日(火)','阪神','甲子園','18:00','8月30日(水)','阪神','甲子園','18:00','9月1日(金)','巨人','横浜','18:00','9月2日( 土)','巨人','横浜','18:00','9月3日(日)','巨人','横浜','17:00','9月5日(火)','広島','マツダスタジアム','18:00','9月6日(水)','広島','マツダスタジアム','18:00','9月7日(木)','広島','マツダスタジアム','18:00','9月8日(金)','ヤクルト','横浜','18:00','9月9日(土)','ヤクルト','横浜','14:00','9月10日(日)','ヤクルト','横浜','14:00','9月12日(火)','中日','横浜','18:00','9 月13日(水)','中日','横浜','18:00','9月15日(金)','ヤクルト','神宮','18:00','9月16日(土)','ヤクルト','神宮','18:00','9月17日(日)','阪神','甲子園','18:00','9月18日(月)','阪神','甲子園','14:00','9月20日(水)','広島','マツダスタジアム','18:00','9月22日(金)','中日','横浜','18:00','9月23日(土)','中日','横浜','14:00','9月24日(日)','巨人','横浜','14:00','9月25日(月)','巨人','横浜','18:00','9月26日(火)','巨人','横浜','18:00'];
+
+router.get('/guide/baystars', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/baystars', data);
+});
 
 
-//   let date, vsteam, location, time;
-//   let id = 144;
-//   const team = 'DeNA';
-//   let countnum = 0;
+router.get('/guide/tigers', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/tigers', data);
+});
 
-//   while (countnum < wholedate.length) {
-//     if ((countnum % 4) == 0) {
-//       date = wholedate[countnum];
-//     } else if ((countnum % 4) == 1) {
-//       vsteam = wholedate[countnum];
-//     } else if ((countnum % 4) == 2) {
-//       location = wholedate[countnum];
-//     } else if ((countnum % 4) == 3) {
-//       time = wholedate[countnum];
-//     }
 
-//     if ((countnum % 4) == 3) {
-//       db.serialize(() => {
-//         db.run('insert into calender (id, date, team, vsteam, location, time) values (?, ?, ?, ?, ?, ?)', id, date, team, vsteam, location, time);
-//       });  
-//       id ++;
-//     }
+router.get('/guide/giants', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/giants', data);
+});
 
-//     countnum ++;
-//   }
 
-//   let data = {
+router.get('/guide/carp', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/carp', data);
+});
 
-//   };
-//   res.render('forBeginners/example', data);
-// });
+
+router.get('/guide/dragons', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/dragons', data);
+});
+
+
+router.get('/guide/buffaloes', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/buffaloes', data);
+});
+
+
+router.get('/guide/hawks', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/hawks', data);
+});
+
+
+router.get('/guide/lions', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/lions', data);
+});
+
+
+router.get('/guide/eagles', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/eagles', data);
+});
+
+
+router.get('/guide/marines', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/marines', data);
+});
+
+
+router.get('/guide/fighters', function (req, res, next) {
+  var data = {};
+  res.render('forBeginners/guide/fighters', data);
+});
+
+
 
 module.exports = router;
