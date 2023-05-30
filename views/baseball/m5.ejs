@@ -57,7 +57,7 @@
     </table>
 
     <div class="text-center">
-        <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg">戻る</button></a>
+        <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg" id="modoru">戻る</button></a>
     </div>
     <!--https://npb.jp/games/2023/schedule_03_detail.html　ここから取得する-->
     <div role="main">
@@ -67,3 +67,10 @@
 </body>
 
 </html>
+
+<script>
+    const back = document.getElementById('modoru');
+back.addEventListener('click',() => {
+    back.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+})
+</script>

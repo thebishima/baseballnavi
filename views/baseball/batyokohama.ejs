@@ -12,28 +12,21 @@
     </title>
 </head>
 <div class="p-3 mb-2 bg-dark text-white">
-    <h3>埼玉西武ライオンズ</h3>
-    <h5><%- year%>年度 選手一覧</h5>
+    <h3><%- year%>年度　横浜DeNAベイスターズ　シーズン成績</h3>
+    <h5><%- month%>月<%- day%>日現在　個人打撃成績</h5>
 </div>
+
 <br>
-<h5><a href="./pitseibu">・個人投手成績</a>　<a href="./batseibu">・個人打撃成績</a></h5>
-<div class="p-3 mb-2 bg-success text-white">
-    <h5>・支配下登録選手</h5>
-</div>
+<p>* 左打　+ 左右打　　　　　　　　　　<a href="./pityokohama">投手成績へ</a></p>
 <table class="table">
     <%- content%>
 </table>
-<div class="p-3 mb-2 bg-info text-white">
-    <h5>・育成選手</h5>
-</div>
-<table class="table">
-    <%- content2%>
-</table>
+
 
 <br>
 <div class="text-center">
     <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg" id="top">TOP</button></a>
-    <a href="./seiseki"><button type="button" class="btn btn-outline-primary btn-lg" id="back">球団選択へ</button></a>
+    <a href="./yokohama"><button type="button" class="btn btn-outline-primary btn-lg" id="back">選手一覧へ</button></a>
 </div>
 <div role="main">
     <table class="table">

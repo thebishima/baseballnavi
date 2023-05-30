@@ -20,64 +20,70 @@
       </h1>
     </div>
   </header>
-<hr>
-<div class="text-center">
-  <h3 class="p-3 mb-2 bg-primary text-white">試合速報(<%- month%>/<%- day%>)</h3>
-</div>
-<div class="text-center">
-  <h4 class="p-3 mb-2 bg-success text-white">セントラル・リーグ</h4>
-</div>
-<div class="text-center">
-  <h3>試合1</h3>
-</div>
-<table class="table">
-  <%- contentl1%>
-</table>
-<br>
-<div class="text-center">
-  <h3>試合2</h3>
-</div>
-<table class="table">
-  <%- contentc1%>
-</table>
-<br>
-<div class="text-center">
-  <h3>試合3</h3>
-</div>
-<table class="table">
-  <%- contentr1%>
-</table>
-<br>
-<div class="text-center">
-  <h4 class="p-3 mb-2 bg-info text-white">パシフィック・リーグ</h4>
-</div>
-<div class="text-center">
-  <h3>試合1</h3>
-</div>
-<table class="table">
-  <%- contentl2%>
-</table>
-<br>
-<div class="text-center">
-  <h3>試合2</h3>
-</div>
-<table class="table">
-  <%- contentc2%>
-</table>
-<br>
-<div class="text-center">
-  <h3>試合3</h3>
-</div>
-<table class="table">
-  <%- contentr2%>
-</table>
-<br>
-<!--スクレイピング内容???-->
-<hr>
+  <hr>
   <div class="text-center">
-    <div class="p-3 mb-2 bg-secondary text-white"><a href="./baseball/m5"><h3>年間試合日程へ</h3></a></div>
-    <div class="p-3 mb-2 bg-secondary text-white"><a href="./baseball/juni"><h3>順位表へ</h3></a></div>
-    <div class="p-3 mb-2 bg-secondary text-white"><a href="./baseball/seiseki"><h3>選手一覧へ</h3></a></div>
+    <h3 class="p-3 mb-2 bg-primary text-white">試合速報(<%- month%>/<%- day%>)</h3>
+  </div>
+  <div class="text-center">
+    <h4 class="p-3 mb-2 bg-success text-white">セントラル・リーグ</h4>
+  </div>
+  <div class="text-center">
+    <h3>試合1</h3>
+  </div>
+  <table class="table">
+    <%- contentl1%>
+  </table>
+  <br>
+  <div class="text-center">
+    <h3>試合2</h3>
+  </div>
+  <table class="table">
+    <%- contentc1%>
+  </table>
+  <br>
+  <div class="text-center">
+    <h3>試合3</h3>
+  </div>
+  <table class="table">
+    <%- contentr1%>
+  </table>
+  <br>
+  <div class="text-center">
+    <h4 class="p-3 mb-2 bg-info text-white">パシフィック・リーグ</h4>
+  </div>
+  <div class="text-center">
+    <h3>試合1</h3>
+  </div>
+  <table class="table">
+    <%- contentl2%>
+  </table>
+  <br>
+  <div class="text-center">
+    <h3>試合2</h3>
+  </div>
+  <table class="table">
+    <%- contentc2%>
+  </table>
+  <br>
+  <div class="text-center">
+    <h3>試合3</h3>
+  </div>
+  <table class="table">
+    <%- contentr2%>
+  </table>
+  <br>
+  <!--スクレイピング内容???-->
+  <hr>
+  <div class="text-center">
+    <div class="p-3 mb-2 bg-secondary text-white"><a href="./baseball/m5">
+        <h3 id="nenkan">年間試合日程へ</h3>
+      </a></div>
+    <div class="p-3 mb-2 bg-secondary text-white"><a href="./baseball/juni">
+        <h3 id="juni">順位表へ</h3>
+      </a></div>
+    <div class="p-3 mb-2 bg-secondary text-white"><a href="./baseball/seiseki">
+        <h3 id="sensyu">選手一覧へ</h3>
+      </a></div>
   </div>
 
 
@@ -89,3 +95,19 @@
 </body>
 
 </html>
+
+<script>
+  const nen = document.getElementById('nenkan');
+  nen.addEventListener('click', () => {
+    nen.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+  })
+
+  const ju = document.getElementById('juni');
+  ju.addEventListener('click', () => {
+    ju.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+  })
+  const sen = document.getElementById('sensyu');
+  sen.addEventListener('click', () => {
+    sen.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+  })
+</script>

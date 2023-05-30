@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        crossorigin="anonymous">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <title>
+    </title>
+</head>
+<div class="p-3 mb-2 bg-dark text-white">
+    <h3><%- year%>年度　埼玉西部ライオンズ　シーズン成績</h3>
+    <h5><%- month%>月<%- day%>日現在　個人投手成績</h5>
+</div>
+
+<br>
+<p>* 左投　　　　　ホール ：ホールド , ＨＰ：ホールドポイント=救援勝利+ホールド　　　　　<a href="./batseibu">打撃成績へ</a></p>
+<table class="table">
+    <%- content%>
+</table>
+
+
+<br>
+<div class="text-center">
+    <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg">TOP</button></a>
+    <a href="./seibu"><button type="button" class="btn btn-outline-primary btn-lg">選手一覧へ</button></a>
+</div>
+<div role="main">
+    <table class="table">
+    </table>
+
+</div>
+</body>
+
+</html>

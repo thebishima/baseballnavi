@@ -8,6 +8,7 @@ const { chownSync } = require('fs');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────総合/試合速報
+
     var today = new Date();//───────────────────────変数を書く場所
     var a = today.getMonth() + 1;
     var b = today.getDate();
@@ -216,6 +217,7 @@ router.get('/', function (req, res, next) {    //──────────�
 
 
 router.get('/juni', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────順位表
+
 
     var today = new Date();
     var a = today.getMonth() + 1;
@@ -523,15 +525,101 @@ router.get('/hanshin', function (req, res, next) {    //────────
 
 });
 
+router.get('/pithanshin', function (req, res, next) {//阪神投手成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idp1_t.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
 
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
 
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
 
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/pithanshin', data);
+    })();
+
+});
+
+router.get('/bathanshin', function (req, res, next) {//阪神打撃成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idb1_t.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/bathanshin', data);
+    })();
+
+});
 
 
 
 router.get('/yakuruto', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────ヤクルト選手一覧
     var today = new Date();
-    var a = today.getFullYear();
+    var y = today.getFullYear();
     var countth = 1;
     var counttd = 1;
 
@@ -556,6 +644,9 @@ router.get('/yakuruto', function (req, res, next) {    //───────�
 
     var rows = '';
     var rows2 = '';
+
+    var htmli = '';
+    var counts = 1;
     //─────────────────────────────────────────────────────────────────────ここからスクレイピング
     const url = 'https://npb.jp/bis/teams/rst_s.html';
     (async () => {
@@ -563,6 +654,8 @@ router.get('/yakuruto', function (req, res, next) {    //───────�
         const page = await browser.newPage();
         await page.goto(url);
 
+        // const datas = await page.$$eval('a', list => list.map(item => item.href));
+        // console.log(datas);
 
         //thead取得部分
         const t = await page.$$('.rosterdivlisttbl > table > tbody > tr');
@@ -629,13 +722,45 @@ router.get('/yakuruto', function (req, res, next) {    //───────�
             } else if (counttd == 84) {
                 td8 += '<tr>';
             }
+            counts = 1;
             for (var ee of tt) {
+                // const href = await ee.$('a', (ee) => ee.href);
                 const html = await page.evaluate(body => body.innerHTML, ee);
-                // console.log(html);
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>';
                 } else if (counttd > 3 && counttd < 40) {
-                    td2 += '<td>' + html + '</td>';
+                    // if (href != null) {
+                    //     const test = await href.getProperty('href');
+                    //     const urls = await test.jsonValue();
+                    //     var a = html.slice(0, 9)
+                    //     var b = urls;
+                    //     var c = html.slice(36)
+                    //     a += b;
+                    //     a += c;
+                    //     console.log(ancer);
+                    // } 
+
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td2 += '<td>' + a + '</td>';
+                            console.log(a);
+                            console.log(counts);
+                        }
+
+                    } else {
+                        td2 += '<td>' + html + '</td>';
+                        console.log(html);
+                        console.log(counts);
+                    }
+
                 } else if (counttd > 40 && counttd < 46) {
                     td3 += '<td>' + html + '</td>';
                 } else if (counttd > 46 && counttd < 65) {
@@ -649,6 +774,8 @@ router.get('/yakuruto', function (req, res, next) {    //───────�
                 } else if (counttd == 84) {
                     td8 += '<td>' + html + '</td>';
                 }
+                // console.log(counts);
+                counts++;
             }
             // console.log(countth);
             if (counttd == 2) {
@@ -689,10 +816,9 @@ router.get('/yakuruto', function (req, res, next) {    //───────�
         rows2 += th8;
         rows2 += td8;
 
-
         //------------------------------------------------------------------データの受け渡しへ
         data = {
-            year: a,
+            year: y,
             content: rows,
             content2: rows2,
         };
@@ -701,7 +827,95 @@ router.get('/yakuruto', function (req, res, next) {    //───────�
 
 });
 
+router.get('/pityakuruto', function (req, res, next) {//ヤクルト投手成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idp1_s.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
 
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/pityakuruto', data);
+    })();
+
+});
+
+router.get('/batyakuruto', function (req, res, next) {//ヤクルト打撃成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idb1_s.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/batyakuruto', data);
+    })();
+
+});
 
 router.get('/yokohama', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────横浜選手一覧
     var today = new Date();
@@ -890,7 +1104,95 @@ router.get('/yokohama', function (req, res, next) {    //───────�
 });
 
 
+router.get('/pityokohama', function (req, res, next) {//横浜投手成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idp1_db.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
 
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/pityokohama', data);
+    })();
+
+});
+
+router.get('/batyokohama', function (req, res, next) {//横浜打撃成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idb1_db.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/batyokohama', data);
+    })();
+
+});
 
 
 router.get('/kyozin', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────巨人選手一覧
@@ -1079,7 +1381,95 @@ router.get('/kyozin', function (req, res, next) {    //────────�
 });
 
 
+router.get('/pitkyozin', function (req, res, next) {//巨人投手成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idp1_g.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
 
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/pitkyozin', data);
+    })();
+
+});
+
+router.get('/batkyozin', function (req, res, next) {//巨人打撃成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idb1_g.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/batkyozin', data);
+    })();
+
+});
 
 
 
@@ -1257,7 +1647,95 @@ router.get('/hirosima', function (req, res, next) {    //───────�
 });
 
 
+router.get('/pithirosima', function (req, res, next) {//広島投手成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idp1_c.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
 
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/pithirosima', data);
+    })();
+
+});
+
+router.get('/bathirosima', function (req, res, next) {//広島打撃成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idb1_c.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/bathirosima', data);
+    })();
+
+});
 
 
 
@@ -1437,6 +1915,95 @@ router.get('/tyuniti', function (req, res, next) {    //────────
 
 
 
+router.get('/pittyuniti', function (req, res, next) {//中日投手成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idp1_d.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/pittyuniti', data);
+    })();
+
+});
+
+router.get('/battyuniti', function (req, res, next) {//中日打撃成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idb1_d.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/battyuniti', data);
+    })();
+
+});
 
 
 
@@ -1632,7 +2199,95 @@ router.get('/orix', function (req, res, next) {    //─────────
 
 
 
+router.get('/pitorix', function (req, res, next) {//オリックス投手成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idp1_b.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
 
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/pitorix', data);
+    })();
+
+});
+
+router.get('/batorix', function (req, res, next) {//オリックス打撃成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idb1_b.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/batorix', data);
+    })();
+
+});
 
 
 
@@ -1828,7 +2483,95 @@ router.get('/softbank', function (req, res, next) {    //───────�
 
 
 
+router.get('/pitsoftbank', function (req, res, next) {//ソフトバンク投手成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idp1_h.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
 
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/pitsoftbank', data);
+    })();
+
+});
+
+router.get('/batsoftbank', function (req, res, next) {//ソフトバンク打撃成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idb1_h.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/batsoftbank', data);
+    })();
+
+});
 
 
 
@@ -2021,7 +2764,95 @@ router.get('/seibu', function (req, res, next) {    //────────�
 });
 
 
+router.get('/pitseibu', function (req, res, next) {//西部投手成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idp1_l.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
 
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/pitseibu', data);
+    })();
+
+});
+
+router.get('/batseibu', function (req, res, next) {//西部打撃成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idb1_l.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/batseibu', data);
+    })();
+
+});
 
 
 
@@ -2209,7 +3040,95 @@ router.get('/rakuten', function (req, res, next) {    //────────
 
 });
 
+router.get('/pitrakuten', function (req, res, next) {//楽天投手成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idp1_e.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
 
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/pitrakuten', data);
+    })();
+
+});
+
+router.get('/batrakuten', function (req, res, next) {//楽天打撃成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idb1_e.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/batrakuten', data);
+    })();
+
+});
 
 
 router.get('/lotte', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────ロッテ選手一覧
@@ -2385,7 +3304,95 @@ router.get('/lotte', function (req, res, next) {    //────────�
 });
 
 
+router.get('/pitlotte', function (req, res, next) {//ロッテ投手成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idp1_m.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
 
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/pitlotte', data);
+    })();
+
+});
+
+router.get('/batlotte', function (req, res, next) {//ロッテ打撃成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idb1_m.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/batlotte', data);
+    })();
+
+});
 
 
 
@@ -2554,7 +3561,95 @@ router.get('/hokkaido', function (req, res, next) {    //───────�
 
 
 
+router.get('/pithokkaido', function (req, res, next) {//日ハム投手成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idp1_f.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
 
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/pithokkaido', data);
+    })();
+
+});
+
+router.get('/bathokkaido', function (req, res, next) {//日ハム打撃成績
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    const url = 'https://npb.jp/bis/2023/stats/idb1_f.html';
+    var rows = '';
+    (async () => {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        const thkun = await page.$$('#stdivmaintbl > table > tbody > tr');//head部取得コード
+        for (var h of thkun) {
+            rows += '<tr>';
+            const thhkun = await h.$$('th');
+            for (hh of thhkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<th>' + htmlh + '</th>';
+            }
+            rows += '</tr>';
+        }
+
+        const tdkun = await page.$$('#stdivmaintbl > table > tbody > .ststats');//head部取得コード
+        for (var h of tdkun) {
+            rows += '<tr>';
+            const tddkun = await h.$$('td');
+            for (hh of tddkun) {
+                const htmlh = await page.evaluate(body => body.innerHTML, hh);
+                rows += '<td>' + htmlh + '</td>';
+            }
+            rows += '</tr>';
+        }
+
+        var data = {
+            year: y,
+            month: m,
+            day: d,
+            content: rows,
+        };
+        res.render('baseball/bathokkaido', data);
+    })();
+
+});
 
 
 

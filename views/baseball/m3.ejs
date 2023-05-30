@@ -22,27 +22,28 @@
     </header>
 
     <hr>
+
     <h3 class="text-center">
-        <a href="m3">3月</a>　
-        <a href="m4">4月</a>　
-        <a href="m5">5月</a>　
-        <a href="m6">6月</a>　
-        <a href="m7">7月</a>　
-        <a href="m8">8月</a>　
-        <a href="m9">9月</a>　
-        <a href="m10">10月</a>　
-        <a href="m11">11月</a>　
+        <a href="m3" id="mon3">3月</a>　
+        <a href="m4" id="mon4">4月</a>　
+        <a href="m5" id="mon5">5月</a>　
+        <a href="m6" id="mon6">6月</a>　
+        <a href="m7" id="mon7">7月</a>　
+        <a href="m8" id="mon8">8月</a>　
+        <a href="m9" id="mon9">9月</a>　
+        <a href="m10" id="mon10">10月</a>　
+        <a href="m11" id="mon11">11月</a>　
     </h3>
     <hr>
     <div class="text-center">
         <h2 class="p-3 mb-2 bg-primary text-white">3月</h2>
     </div>
-<table class="table">
-    <%- content%>
-</table>
+    <table class="table">
+        <%- content%>
+    </table>
 
     <div class="text-center">
-        <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg">戻る</button></a>
+        <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg" id="modoru">戻る</button></a>
     </div>
     <!--https://npb.jp/games/2023/schedule_03_detail.html　ここから取得する-->
     <div role="main">
@@ -52,3 +53,46 @@
 </body>
 
 </html>
+
+<script>
+    const back = document.getElementById('modoru');
+    back.addEventListener('click', () => {
+        back.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const m3 = document.getElementById('mon3');
+    m3.addEventListener('click', () => {
+        m3.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const m4 = document.getElementById('mon4');
+    m4.addEventListener('click', () => {
+        m4.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const m5 = document.getElementById('mon5');
+    m5.addEventListener('click', () => {
+        m5.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const m6 = document.getElementById('mon6');
+    m6.addEventListener('click', () => {
+        m6.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const m7 = document.getElementById('mon7');
+    m7.addEventListener('click', () => {
+        m7.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const m8 = document.getElementById('mon8');
+    m8.addEventListener('click', () => {
+        m8.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const m9 = document.getElementById('mon9');
+    m9.addEventListener('click', () => {
+        m9.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const m10 = document.getElementById('mon10');
+    m10.addEventListener('click', () => {
+        m10.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const m11 = document.getElementById('mon11');
+    m11.addEventListener('click', () => {
+        m11.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+</script>

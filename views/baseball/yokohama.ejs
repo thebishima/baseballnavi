@@ -16,6 +16,7 @@
     <h5><%- year%>年度 選手一覧</h5>
 </div>
 <br>
+<h5><a href="./pityokohama">・個人投手成績</a>　<a href="./batyokohama">・個人打撃成績</a></h5>
 <div class="p-3 mb-2 bg-success text-white">
     <h5>・支配下登録選手</h5>
 </div>
@@ -31,8 +32,8 @@
 
 <br>
 <div class="text-center">
-    <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg">TOP</button></a>
-    <a href="./seiseki"><button type="button" class="btn btn-outline-primary btn-lg">球団選択へ</button></a>
+    <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg" id="top">TOP</button></a>
+    <a href="./seiseki"><button type="button" class="btn btn-outline-primary btn-lg" id="back">球団選択へ</button></a>
 </div>
 <div role="main">
     <table class="table">
@@ -42,3 +43,14 @@
 </body>
 
 </html>
+
+<script>
+            const t = document.getElementById('top');
+    t.addEventListener('click', () => {
+        t.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+        const  b= document.getElementById('back');
+    b.addEventListener('click', () => {
+        b.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+</script>
