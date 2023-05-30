@@ -65,7 +65,6 @@ router.post('/signup', (req, res, next) => {
     db.get('select max(ID) as id from account ', (err, row) => {
       if (row != undefined) {
         count = row.id + 1;
-        console.log(count);
       }
     });
 
@@ -174,7 +173,7 @@ router.get("/deletecookie", function (req, res, next) {
 let teamArray = { '東京ヤクルトスワローズ': 'ヤクルト', '横浜DeNAベイスターズ': 'DeNA', '阪神タイガース': '阪神', '読売ジャイアンツ': '巨人', '広島東洋カープ': '広島', '中日ドラゴンズ': '中日', 'オリックス・バファローズ': 'オリックス', '福岡ソフトバンクホークス': 'ソフトバンク', '埼玉西武ライオンズ': '西武', '東北楽天ゴールデンイーグルス': '楽天', '千葉ロッテマリーンズ': 'ロッテ', '北海道日本ハムファイターズ': '日本ハム' };
 let teamArrayReverse = { 'ヤクルト': '東京ヤクルトスワローズ', 'DeNA': '横浜DeNAベイスターズ', '阪神': '阪神タイガース', '巨人': '読売ジャイアンツ', '広島': '広島東洋カープ', '中日': '中日ドラゴンズ', 'オリックス': 'オリックス・バファローズ', 'ソフトバンク': '福岡ソフトバンクホークス', '西武': '埼玉西武ライオンズ', '楽天': '東北楽天ゴールデンイーグルス', 'ロッテ': '千葉ロッテマリーンズ', '日本ハム': '北海道日本ハムファイターズ' };
 const homeStudium = { '北海道日本ハムファイターズ': '北広島駅', '東北楽天ゴールデンイーグルス': '宮城野原', '千葉ロッテマリーンズ': '海浜幕張', '読売ジャイアンツ': '水道橋駅', '東京ヤクルトスワローズ': '外苑前駅', '横浜DeNAベイスターズ': '関内', '埼玉西武ライオンズ': '西武球場前駅', '中日ドラゴンズ': 'ナゴヤドーム前矢田', 'オリックス・バファローズ': 'ドーム前千代崎', '阪神タイガース': '甲子園駅', '広島東洋カープ': '広島駅', '福岡ソフトバンクホークス': '唐人町駅' };
-const homeStation = { '神宮': '外苑前駅', 'バンテリンドーム': 'ナゴヤドーム前矢田', '甲子園': '甲子園駅', 'マツダスタジアム': '広島駅', '横浜': '関内', '東京ドーム': '水道橋駅', 'PayPayドーム': '唐人町駅', 'ベルーナドーム': '西武球場前駅', 'エスコンF': '北広島駅', '楽天モバイル': '宮城野原', 'ZOZOマリン': '海浜幕張', '京セラD大阪': 'ドーム前千代崎' };
+const homeStation = { '神宮': '外苑前駅', 'バンテリンドーム': 'ナゴヤドーム前矢田', '甲子園': '甲子園駅', 'マツダスタジアム': '広島駅', '横浜': '関内', '東京ドーム': '水道橋駅', 'PayPayドーム': '唐人町駅', 'ベルーナドーム': '西武球場前駅', 'エスコンＦ': '北広島駅', '楽天モバイル': '宮城野原', 'ZOZOマリン': '海浜幕張', '京セラD大阪': 'ドーム前千代崎' };
 
 router.get('/calender', function (req, res, next) {
   let accountTeam = req.cookies.team;
@@ -183,7 +182,6 @@ router.get('/calender', function (req, res, next) {
   let m, d, ddate, dtime, hh, m1, m2, dminute, station, url, date;
   let monthCounter = 3;
   let month = 3;
-
 
 
   rows += '<div class="tab-pane fade show active" id="m' + month + '" role="tabpanel" aria-labelledby="m' + month + '-tab"><table class="table table-striped table-hover text-center"><tr><th>試合日</th><th>開始時間</th><th>対戦相手</th><th>球場</th><th>経路</th></tr>';
@@ -280,9 +278,64 @@ router.get('/guide/ticket', function (req, res, next) {
 
 
 router.get('/guide/swallows', function (req, res, next) {
-  var data = {};
+  let text = 'コメントが投稿されていません。'
+  // db.serialize(() => {
+  //   db.each('select * from comment', (err, row) => {
+  //     if (row != undefined) {
+  //       text += '<h3>' + row.name + ':' + row.time + '</h3><p>' + row.comment + '</p><hr>';
+  //     }
+  //   });
+  // });
+
+
+  var data = {
+    comment: text
+  };
   res.render('forBeginners/guide/swallows', data);
 });
+
+
+router.post('/guide/swallows', function (req, res, next) {
+  let commentCounter = 1;
+  let id = commentCounter;
+  let comment = req.body.comment;
+  let name = req.cookies.name;
+  if (name == '') {
+    name = '名無し';
+  }
+  let text = '';
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let seconds = date.getSeconds();
+  let time = year + '年' + month + '月' + day + '日' + hours + '時' + minutes + '分' + seconds + '秒';
+
+  db.serialize(() => {
+    db.get('select max(id) as id from comment', (err, row) => {
+      if (row != undefined) {
+        commentCounter = row.id + 1;
+      }
+    });
+
+    db.run('insert into comment (id, time, name, comment) values (?, ?, ?, ?)', commentCounter, time, name, comment);
+    db.each('select * from comment', (err, row) => {
+      if (row != undefined) {
+        text += '<h5>' + row.name + ':' + row.time + '</h5><p>' + row.comment + '</p><hr>';
+        console.log(text);
+      }
+    }, (err, row) => {
+      var data = {
+        comment: text
+      };
+      res.render('forBeginners/guide/swallows', data);
+    });
+  });
+});
+
+
 
 
 router.get('/guide/baystars', function (req, res, next) {
