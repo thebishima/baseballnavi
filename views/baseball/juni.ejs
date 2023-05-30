@@ -36,7 +36,7 @@
     </table>
 
     <div class="text-center">
-        <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg">戻る</button></a>
+        <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg" id="modoru">戻る</button></a>
     </div>
     <div role="main">
         <table class="table">
@@ -46,3 +46,10 @@
 </body>
 
 </html>
+
+<script>
+        const back = document.getElementById('modoru');
+    back.addEventListener('click',() => {
+        back.textContent = '読み込み中・・・';
+    })
+</script>

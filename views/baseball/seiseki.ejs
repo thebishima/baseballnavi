@@ -26,36 +26,100 @@
             <div class="text-center">
                 <h6 class="p-3 mb-2 bg-success text-white">セントラル・リーグ</h6>
             </div>
-            <div class="btn btn-outline-success"><a href="./yakuruto">東京ヤクルトスワローズ</a></div>
-            <div class="btn btn-outline-success"><a href="./yokohama">横浜DeNAベイスターズ</a></div>
-            <div class="btn btn-outline-success"><a href="./hanshin">阪神タイガース</a></div>
-            <div class="btn btn-outline-success"><a href="./kyozin">読売ジャイアンツ</a></div>
-            <div class="btn btn-outline-success"><a href="./hirosima">広島東洋カープ</a></div>
-            <div class="btn btn-outline-success"><a href="./tyuniti">中日ドラゴンズ</a></div>
+            <div class="btn btn-outline-success" id="yaku"><a href="./yakuruto">東京ヤクルトスワローズ</a></div>
+            <div class="btn btn-outline-success" id="yoko"><a href="./yokohama">横浜DeNAベイスターズ</a></div>
+            <div class="btn btn-outline-success" id="han"><a href="./hanshin">阪神タイガース</a></div>
+            <div class="btn btn-outline-success" id="kyo"><a href="./kyozin">読売ジャイアンツ</a></div>
+            <div class="btn btn-outline-success" id="hirosima"><a href="./hirosima">広島東洋カープ</a></div>
+            <div class="btn btn-outline-success" id="tyuniti"><a href="./tyuniti">中日ドラゴンズ</a></div>
         </div>
 
         <div class="btn-group-vertical">
             <div class="text-center">
                 <h6 class="p-3 mb-2 bg-info text-white">パシフィック・リーグ</h6>
             </div>
-            <div class="btn btn-outline-info"><a href="./orix">オリックス・バファローズ</a></div>
-            <div class="btn btn-outline-info"><a href="./softbank">福岡ソフトバンクホークス</a></div>
-            <div class="btn btn-outline-info"><a href="./seibu">埼玉西武ライオンズ</a></div>
-            <div class="btn btn-outline-info"><a href="./rakuten">東北楽天ゴールデンイーグルス</a></div>
-            <div class="btn btn-outline-info"><a href="./lotte">千葉ロッテマリーンズ</a></div>
-            <div class="btn btn-outline-info"><a href="./hokkaido">北海道日本ハムファイターズ</a></div>
+            <div class="btn btn-outline-info" id="orix"><a href="./orix">オリックス・バファローズ</a></div>
+            <div class="btn btn-outline-info" id="softbank"><a href="./softbank">福岡ソフトバンクホークス</a></div>
+            <div class="btn btn-outline-info" id="saitama"><a href="./seibu">埼玉西武ライオンズ</a></div>
+            <div class="btn btn-outline-info" id="touhoku"><a href="./rakuten">東北楽天ゴールデンイーグルス</a></div>
+            <div class="btn btn-outline-info" id="tiba"><a href="./lotte">千葉ロッテマリーンズ</a></div>
+            <div class="btn btn-outline-info" id="hokkaido"><a href="./hokkaido">北海道日本ハムファイターズ</a></div>
         </div>
     </div>
 
     <br>
     <div class="text-center">
-        <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg">戻る</button></a>
+        <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg" id="modoru">戻る</button></a>
     </div>
     <div role="main">
         <table class="table">
         </table>
-
     </div>
+
+    <!--
+        <div class="d-flex justify-content-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+-->
 </body>
 
 </html>
+
+<script>
+    const back = document.getElementById('modoru');
+    back.addEventListener('click', () => {
+        // back.textContent = '読み込み中・・・';
+        back.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const yakuruto = document.getElementById('yaku');
+    yakuruto.addEventListener('click', () => {
+        yakuruto.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const yokohama = document.getElementById('yoko');
+    yokohama.addEventListener('click', () => {
+        yokohama.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const hanshin = document.getElementById('han');
+    hanshin.addEventListener('click', () => {
+        hanshin.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const kyozin = document.getElementById('kyo');
+    kyozin.addEventListener('click', () => {
+        kyozin.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const hiro = document.getElementById('hirosima');
+    hiro.addEventListener('click', () => {
+        hiro.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const tyu = document.getElementById('tyuniti');
+    tyu.addEventListener('click', () => {
+        tyu.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const ori = document.getElementById('orix');
+    ori.addEventListener('click', () => {
+        ori.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const sof = document.getElementById('softbank');
+    sof.addEventListener('click', () => {
+        sof.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const li = document.getElementById('saitama');
+    li.addEventListener('click', () => {
+        li.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const raku = document.getElementById('touhoku');
+    raku.addEventListener('click', () => {
+        raku.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const lo = document.getElementById('tiba');
+    lo.addEventListener('click', () => {
+        lo.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+    const hamu = document.getElementById('hokkaido');
+    hamu.addEventListener('click', () => {
+        hamu.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+    })
+
+</script>
