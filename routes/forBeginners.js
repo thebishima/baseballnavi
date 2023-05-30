@@ -179,70 +179,63 @@ const homeStation = { '神宮': '外苑前駅', 'バンテリンドーム': 'ナ
 router.get('/calender', function (req, res, next) {
   let accountTeam = req.cookies.team;
   let rows = '';
-
-  db.serialize(() => {
-    db.each('select * from calender where team = ?', [teamArray[accountTeam]], (err, row) => {
-      if (row != undefined) {
-        rows += '<input type="radio" value="' + row.date + '" name="postDate">' + row.date + row.team + row.vsteam + row.location + row.time + '<br>';
-      }
-    }, (err, row) => {
-      let data = {
-        content: accountTeam,
-        teamInfo: rows
-      };
-      res.render('forBeginners/calender', data);
-    });
-  });
-});
-
-
-// 経路検索ページ
-router.post('/route', function (req, res, next) {
-  const postDate = req.body.postDate;
-  const cookieTeam = teamArray[req.cookies.team];
   const from = req.cookies.station;
   let m, d, ddate, dtime, hh, m1, m2, dminute, station, url, date;
 
-  db.serialize(() => {
-    db.each('select * from calender where team = ? and date = ?', [cookieTeam, postDate], (err, row) => {
-      if (row != undefined) {
-        date = row.date + row.time + 'VS' + row.vsteam + 'in' + row.location;
+  rows += '<table class="table table-striped table-hover text-center"><tr><th>試合日</th><th>開始時間</th><th>対戦相手</th><th>球場</th><th>経路検索</th></tr>';
 
-        ddate = row.date;
-        ddate = ddate.split(/月|日/g);
-        m = ddate[0];
-        if (m < 10) {
-          m = '0' + m;
+  if (accountTeam != undefined) {
+    db.serialize(() => {
+      db.each('select * from calender where team = ?', [teamArray[accountTeam]], (err, row) => {
+        if (row != undefined) {
+          ddate = row.date;
+          ddate = ddate.split(/月|日/g);
+          m = ddate[0];
+          if (m < 10) {
+            m = '0' + m;
+          }
+          d = ddate[1];
+          if (d < 10) {
+            d = '0' + d;
+          }
+
+          dtime = row.time;
+          dtime = dtime.split(':');
+          hh = dtime[0] - 1;
+          if (hh < 10) {
+            hh = '0' + hh;
+          }
+          dminute = dtime[1];
+          dminute = dminute.slice('');
+          m1 = dminute[0];
+          m2 = dminute[1];
+
+          station = homeStation[row.location];
+
+          url = '<a href="https://transit.yahoo.co.jp/search/result?from=' + from + '&to=%' + station + '&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y=2023&m=' + m + '&d=' + d + '&hh=' + hh + '&m1=' + m1 + '&m2=' + m2 + '&type=4&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1" target="_blank">経路検索</a>';
+
+          rows += '<tr><td>' + row.date + '</td><td>' + row.time + '</td><td>' + row.vsteam + '</td><td>' + row.location + '</td><td>' + url + '</td>';
         }
-        d = ddate[1];
-        if (d < 10) {
-          d = '0' + d;
-        }
-
-        dtime = row.time;
-        dtime = dtime.split(':');
-        hh = dtime[0] - 1;
-        if (hh < 10) {
-          hh = '0' + hh;
-        }
-        dminute = dtime[1];
-        dminute = dminute.slice('');
-        m1 = dminute[0];
-        m2 = dminute[1];
-
-        station = homeStation[row.location];
-
-        url = '<a href="https://transit.yahoo.co.jp/search/result?from=' + from + '&to=%' + station + '&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y=2023&m=' + m + '&d=' + d + '&hh=' + hh + '&m1=' + m1 + '&m2=' + m2 + '&type=4&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1" target="_blank">経路検索</a>';
-      }
-    }, (err, row) => {
-      let data = {
-        targetData: date,
-        url: url
-      };
-      res.render('forBeginners/route', data);
+      }, (err, row) => {
+        rows += '</table><footer><p class="copyright">&copy;BaseballNavi</p></footer>';
+        let data = {
+          content: accountTeam + 'の試合一覧',
+          teamInfo: rows
+        };
+        res.render('forBeginners/calender', data);
+      });
     });
-  });
+
+  } else {
+    let data = {
+      content:'好きなチームを登録してください。<br>　↓　↓　↓',
+      teamInfo:'<a href="/forBeginners/loginHome">ログインページ</a>へ'
+    };
+    res.render('forBeginners/calender', data);
+  }
+
 });
+
 
 
 // ガイド
