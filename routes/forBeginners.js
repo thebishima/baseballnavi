@@ -295,8 +295,8 @@ router.get('/guide/swallows', function (req, res, next) {
 });
 
 
+let commentCounter;
 router.post('/guide/swallows', function (req, res, next) {
-  let commentCounter = 1;
   let id = commentCounter;
   let comment = req.body.comment;
   let name = req.cookies.name;
@@ -316,9 +316,13 @@ router.post('/guide/swallows', function (req, res, next) {
   db.serialize(() => {
     db.get('select max(id) as id from comment', (err, row) => {
       if (row != undefined) {
+        console.log('first' + commentCounter);
         commentCounter = row.id + 1;
+        console.log('second' + commentCounter);
       }
     });
+
+    console.log('third' + commentCounter);
 
     db.run('insert into comment (id, time, name, comment) values (?, ?, ?, ?)', commentCounter, time, name, comment);
     db.each('select * from comment', (err, row) => {
