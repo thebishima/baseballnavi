@@ -25,8 +25,8 @@
 
 <br>
 <div class="text-center">
-    <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg">TOP</button></a>
-    <a href="./rakuten"><button type="button" class="btn btn-outline-primary btn-lg">選手一覧へ</button></a>
+    <a href="../baseball"><button type="button" class="btn btn-outline-primary btn-lg" id="top">TOP</button></a>
+    <a href="./rakuten"><button type="button" class="btn btn-outline-primary btn-lg" id="back">選手一覧へ</button></a>
 </div>
 <div role="main">
     <table class="table">
@@ -36,3 +36,14 @@
 </body>
 
 </html>
+
+<script>
+    const t = document.getElementById('top');
+t.addEventListener('click', () => {
+t.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+})
+const  b= document.getElementById('back');
+b.addEventListener('click', () => {
+b.innerHTML = '<div class=spinner-border text-primary role"status"></div>';
+})
+</script>
