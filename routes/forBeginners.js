@@ -71,27 +71,50 @@ router.post('/signup', (req, res, next) => {
 
   if (nm != '' && pw != '') {
     db.serialize(() => {
-      db.each('select * from account', (err, row) => {
-        if (nm == row.name) {
-          res.redirect('/forBeginners/signup');
-        }
-      });
+      function f1() {
+        return new Promise((resolve, reject) => {
+          db.each('select * from account', (err, row) => {
+            if (nm == row.name) {
+              res.redirect('/forBeginners/signup');
+            }
+          });
+          resolve();
+        });
+      }
 
-      db.get('select max(ID) as id from account ', (err, row) => {
-        if (row != undefined) {
-          count = row.id + 1;
-        }
-      });
+      function f2() {
+        db.each('select * from account', (err, row) => {
+          if (nm == row.name) {
+            res.redirect('/forBeginners/signup');
+          }
+        });  
+      }
 
-      db.run('insert into account (id, name, password) values (?, ?, ?)', count, nm, pw);
-      db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
-        if (row != undefined) {
-          res.cookie('name', row.name);
-          res.cookie('password', row.password);
-          count++;
-          res.redirect('/forBeginners/account');
-        }
-      });
+      function f3() {
+        db.get('select max(ID) as id from account ', (err, row) => {
+          if (row != undefined) {
+            count = row.id + 1;
+          }
+        });  
+      }
+
+      function f4 () {
+        db.run('insert into account (id, name, password) values (?, ?, ?)', count, nm, pw);
+        db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
+          if (row != undefined) {
+            res.cookie('name', row.name);
+            res.cookie('password', row.password);
+            count++;
+            res.redirect('/forBeginners/account');
+          }
+        });  
+      }
+
+
+      f1().then(() => {
+        
+      })
+      
     });
   } else {
     res.redirect('/forBeginners/signup');
