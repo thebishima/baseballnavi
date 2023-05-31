@@ -33,51 +33,69 @@ router.get('/login', function (req, res, next) {
 router.post('/login', (req, res, next) => {
   let nm = req.body.name;
   let pw = req.body.password;
-  db.serialize(() => {
-    db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
-      if (row != undefined) {
-        res.cookie('name', row.name);
-        res.cookie('password', row.password);
-        res.cookie('team', row.team);
-        res.cookie('station', row.station);
-        res.redirect('/forBeginners/account');
-        return;
-      } else {
-        res.redirect('/forBeginners/login');
-      }
+  if (nm != '' && pw != '') {
+    db.serialize(() => {
+      db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
+        if (row != undefined) {
+          res.cookie('name', row.name);
+          res.cookie('password', row.password);
+          res.cookie('team', row.team);
+          res.cookie('station', row.station);
+          res.redirect('/forBeginners/account');
+          return;
+        } else {
+          res.redirect('/forBeginners/login');
+        }
+      });
     });
-  });
+  } else {
+    res.redirect('/forBeginners/login');
+  }
 });
 
 
 // サインアップ
 router.get('/signup', (req, res, next) => {
+  if (req.cookies.name != null) {
+    res.redirect('/forBeginners/account');
+  }
   var data = {}
   res.render('forBeginners/signup', data);
 });
+
 
 let count;
 router.post('/signup', (req, res, next) => {
   const nm = req.body.name;
   const pw = req.body.password;
 
-  db.serialize(() => {
-    db.get('select max(ID) as id from account ', (err, row) => {
-      if (row != undefined) {
-        count = row.id + 1;
-      }
-    });
+  if (nm != '' && pw != '') {
+    db.serialize(() => {
+      db.each('select * from account', (err, row) => {
+        if (nm == row.name) {
+          res.redirect('/forBeginners/signup');
+        }
+      });
 
-    db.run('insert into account (id, name, password) values (?, ?, ?)', count, nm, pw);
-    db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
-      if (row != undefined) {
-        res.cookie('name', row.name);
-        res.cookie('password', row.password);
-        count++;
-        res.redirect('/forBeginners/account');
-      }
+      db.get('select max(ID) as id from account ', (err, row) => {
+        if (row != undefined) {
+          count = row.id + 1;
+        }
+      });
+
+      db.run('insert into account (id, name, password) values (?, ?, ?)', count, nm, pw);
+      db.get('select * from account where name = ? and password = ?', [nm, pw], (err, row) => {
+        if (row != undefined) {
+          res.cookie('name', row.name);
+          res.cookie('password', row.password);
+          count++;
+          res.redirect('/forBeginners/account');
+        }
+      });
     });
-  });
+  } else {
+    res.redirect('/forBeginners/signup');
+  }
 });
 
 
@@ -289,55 +307,55 @@ router.get('/guide/swallows', function (req, res, next) {
 
 
   var data = {
-    comment: text
+    // comment: text
   };
   res.render('forBeginners/guide/swallows', data);
 });
 
 
-let commentCounter;
-router.post('/guide/swallows', function (req, res, next) {
-  let id = commentCounter;
-  let comment = req.body.comment;
-  let name = req.cookies.name;
-  if (name == '') {
-    name = '名無し';
-  }
-  let text = '';
-  let date = new Date();
-  let year = date.getFullYear();
-  let month = date.getMonth() + 1;
-  let day = date.getDate();
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let seconds = date.getSeconds();
-  let time = year + '年' + month + '月' + day + '日' + hours + '時' + minutes + '分' + seconds + '秒';
+// let commentCounter;
+// router.post('/guide/swallows', function (req, res, next) {
+//   let id = commentCounter;
+//   let comment = req.body.comment;
+//   let name = req.cookies.name;
+//   if (name == '') {
+//     name = '名無し';
+//   }
+//   let text = '';
+//   let date = new Date();
+//   let year = date.getFullYear();
+//   let month = date.getMonth() + 1;
+//   let day = date.getDate();
+//   let hours = date.getHours();
+//   let minutes = date.getMinutes();
+//   let seconds = date.getSeconds();
+//   let time = year + '年' + month + '月' + day + '日' + hours + '時' + minutes + '分' + seconds + '秒';
 
-  db.serialize(() => {
-    db.get('select max(id) as id from comment', (err, row) => {
-      if (row != undefined) {
-        console.log('first' + commentCounter);
-        commentCounter = row.id + 1;
-        console.log('second' + commentCounter);
-      }
-    });
+//   db.serialize(() => {
+//     db.get('select max(id) as id from comment', (err, row) => {
+//       if (row != undefined) {
+//         console.log('first' + commentCounter);
+//         commentCounter = row.id + 1;
+//         console.log('second' + commentCounter);
+//       }
+//     });
 
-    console.log('third' + commentCounter);
+//     console.log('third' + commentCounter);
 
-    db.run('insert into comment (id, time, name, comment) values (?, ?, ?, ?)', commentCounter, time, name, comment);
-    db.each('select * from comment', (err, row) => {
-      if (row != undefined) {
-        text += '<h5>' + row.name + ':' + row.time + '</h5><p>' + row.comment + '</p><hr>';
-        console.log(text);
-      }
-    }, (err, row) => {
-      var data = {
-        comment: text
-      };
-      res.render('forBeginners/guide/swallows', data);
-    });
-  });
-});
+//     db.run('insert into comment (id, time, name, comment) values (?, ?, ?, ?)', commentCounter, time, name, comment);
+//     db.each('select * from comment', (err, row) => {
+//       if (row != undefined) {
+//         text += '<h5>' + row.name + ':' + row.time + '</h5><p>' + row.comment + '</p><hr>';
+//         console.log(text);
+//       }
+//     }, (err, row) => {
+//       var data = {
+//         comment: text
+//       };
+//       res.render('forBeginners/guide/swallows', data);
+//     });
+//   });
+// });
 
 
 
