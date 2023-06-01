@@ -370,7 +370,7 @@ router.get('/seiseki', function (req, res, next) {    //────────
 
 router.get('/hanshin', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────阪神選手一覧
     var today = new Date();
-    var a = today.getFullYear();
+    var y = today.getFullYear();
     var countth = 1;
     var counttd = 1;
 
@@ -393,6 +393,7 @@ router.get('/hanshin', function (req, res, next) {    //────────
 
     var rows = '';
     var rows2 = '';
+    var counts = 1;
     //─────────────────────────────────────────────────────────────────────ここからスクレイピング
     const url = 'https://npb.jp/bis/teams/rst_t.html';
     (async () => {
@@ -459,24 +460,122 @@ router.get('/hanshin', function (req, res, next) {    //────────
             } else if (counttd == 81) {
                 td7 += '<tr>'
             }
+            counts = 1;
             for (var ee of tt) {
                 const html = await page.evaluate(body => body.innerHTML, ee);
                 // console.log(html);
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>'
                 } else if (counttd > 3 && counttd < 37) {
-                    td2 += '<td>' + html + '</td>'
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td2 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td2 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 37 && counttd < 45) {
-                    td3 += '<td>' + html + '</td>'
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td3 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td3 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 45 && counttd < 61) {
-                    td4 += '<td>' + html + '</td>'
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td4 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td4 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 61 && counttd < 75) {
-                    td5 += '<td>' + html + '</td>'
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td5 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td5 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 75 && counttd < 80) {
-                    td6 += '<td>' + html + '</td>'
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td6 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td6 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd == 81) {
-                    td7 += '<td>' + html + '</td>'
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td7 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td7 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 }
+                counts++;
             }
             // console.log(countth);
             if (counttd == 2) {
@@ -516,7 +615,7 @@ router.get('/hanshin', function (req, res, next) {    //────────
 
         //------------------------------------------------------------------データの受け渡しへ
         data = {
-            year: a,
+            year: y,
             content: rows,
             content2: rows2,
         };
@@ -729,18 +828,7 @@ router.get('/yakuruto', function (req, res, next) {    //───────�
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>';
                 } else if (counttd > 3 && counttd < 40) {
-                    // if (href != null) {
-                    //     const test = await href.getProperty('href');
-                    //     const urls = await test.jsonValue();
-                    //     var a = html.slice(0, 9)
-                    //     var b = urls;
-                    //     var c = html.slice(36)
-                    //     a += b;
-                    //     a += c;
-                    //     console.log(ancer);
-                    // } 
-
-                    if (counts == 2) {
+                    if (counts == 2) {//start
                         const href = await ee.$('a', (ee) => ee.href);
                         if (href != null) {
                             const test = await href.getProperty('href');
@@ -751,28 +839,122 @@ router.get('/yakuruto', function (req, res, next) {    //───────�
                             a += b;
                             a += c;
                             td2 += '<td>' + a + '</td>';
-                            console.log(a);
-                            console.log(counts);
+                            // console.log(a);
+                            // console.log(counts);
                         }
-
                     } else {
                         td2 += '<td>' + html + '</td>';
-                        console.log(html);
-                        console.log(counts);
-                    }
-
+                        // console.log(html);
+                        // console.log(counts);
+                    }//finish
                 } else if (counttd > 40 && counttd < 46) {
-                    td3 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td3 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td3 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 46 && counttd < 65) {
-                    td4 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td4 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td4 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 65 && counttd < 74) {
-                    td5 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td5 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td5 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 74 && counttd < 80) {
-                    td6 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td6 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td6 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 80 && counttd < 83) {
-                    td7 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td7 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td7 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd == 84) {
-                    td8 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td8 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td8 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 }
                 // console.log(counts);
                 counts++;
@@ -919,7 +1101,7 @@ router.get('/batyakuruto', function (req, res, next) {//ヤクルト打撃成績
 
 router.get('/yokohama', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────横浜選手一覧
     var today = new Date();
-    var a = today.getFullYear();
+    var y = today.getFullYear();
     var countth = 1;
     var counttd = 1;
 
@@ -946,6 +1128,7 @@ router.get('/yokohama', function (req, res, next) {    //───────�
 
     var rows = '';
     var rows2 = '';
+    var counts = 1;
     //─────────────────────────────────────────────────────────────────────ここからスクレイピング
     const url = 'https://npb.jp/bis/teams/rst_db.html';
     (async () => {
@@ -1025,28 +1208,159 @@ router.get('/yokohama', function (req, res, next) {    //───────�
             } else if (counttd > 87 && counttd < 91) {
                 td9 += '<tr>';
             }
+            counts = 1;
             for (var ee of tt) {
                 const html = await page.evaluate(body => body.innerHTML, ee);
                 // console.log(html);
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>';
                 } else if (counttd > 3 && counttd < 41) {
-                    td2 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td2 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td2 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
+                    // td2 += '<td>' + html + '</td>';
                 } else if (counttd > 41 && counttd < 48) {
-                    td3 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td3 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td3 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 48 && counttd < 63) {
-                    td4 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td4 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td4 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 63 && counttd < 74) {
-                    td5 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td5 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td5 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 74 && counttd < 82) {
-                    td6 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td6 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td6 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 82 && counttd < 85) {
-                    td7 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td7 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td7 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd == 86) {
-                    td8 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td8 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td8 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 87 && counttd < 91) {
-                    td9 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td9 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td9 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 }
+                counts++;
             }
             // console.log(countth);
             if (counttd == 2) {
@@ -1094,7 +1408,7 @@ router.get('/yokohama', function (req, res, next) {    //───────�
 
         //------------------------------------------------------------------データの受け渡しへ
         data = {
-            year: a,
+            year: y,
             content: rows,
             content2: rows2,
         };
@@ -1197,7 +1511,7 @@ router.get('/batyokohama', function (req, res, next) {//横浜打撃成績
 
 router.get('/kyozin', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────巨人選手一覧
     var today = new Date();
-    var a = today.getFullYear();
+    var y = today.getFullYear();
     var countth = 1;
     var counttd = 1;
 
@@ -1224,6 +1538,7 @@ router.get('/kyozin', function (req, res, next) {    //────────�
 
     var rows = '';
     var rows2 = '';
+    var counts = 1;
     //─────────────────────────────────────────────────────────────────────ここからスクレイピング
     const url = 'https://npb.jp/bis/teams/rst_g.html';
     (async () => {
@@ -1303,28 +1618,158 @@ router.get('/kyozin', function (req, res, next) {    //────────�
             } else if (counttd > 109 && counttd < 117) {
                 td9 += '<tr>';
             }
+            counts = 1;
             for (var ee of tt) {
                 const html = await page.evaluate(body => body.innerHTML, ee);
                 // console.log(html);
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>';
                 } else if (counttd > 3 && counttd < 37) {
-                    td2 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td2 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td2 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 37 && counttd < 43) {
-                    td3 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td3 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td3 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 43 && counttd < 61) {
-                    td4 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td4 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td4 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 61 && counttd < 74) {
-                    td5 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td5 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td5 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 74 && counttd < 96) {
-                    td6 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td6 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td6 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 96 && counttd < 102) {
-                    td7 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td7 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td7 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 102 && counttd < 109) {
-                    td8 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td8 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td8 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 109 && counttd < 117) {
-                    td9 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td9 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td9 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 }
+                counts++;
             }
             if (counttd == 2) {
                 td1 += '</tr>';
@@ -1371,7 +1816,7 @@ router.get('/kyozin', function (req, res, next) {    //────────�
 
         //------------------------------------------------------------------データの受け渡しへ
         data = {
-            year: a,
+            year: y,
             content: rows,
             content2: rows2,
         };
@@ -1476,7 +1921,7 @@ router.get('/batkyozin', function (req, res, next) {//巨人打撃成績
 
 router.get('/hirosima', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────広島選手一覧
     var today = new Date();
-    var a = today.getFullYear();
+    var y = today.getFullYear();
     var countth = 1;
     var counttd = 1;
 
@@ -1501,6 +1946,7 @@ router.get('/hirosima', function (req, res, next) {    //───────�
 
     var rows = '';
     var rows2 = '';
+    counts = 1;
     //─────────────────────────────────────────────────────────────────────ここからスクレイピング
     const url = 'https://npb.jp/bis/teams/rst_c.html';
     (async () => {
@@ -1574,26 +2020,140 @@ router.get('/hirosima', function (req, res, next) {    //───────�
             } else if (counttd > 83 && counttd < 86) {
                 td8 += '<tr>';
             }
+            counts = 1;
             for (var ee of tt) {
                 const html = await page.evaluate(body => body.innerHTML, ee);
                 // console.log(html);
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>';
                 } else if (counttd > 3 && counttd < 38) {
-                    td2 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td2 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td2 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 38 && counttd < 47) {
-                    td3 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td3 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td3 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 47 && counttd < 63) {
-                    td4 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td4 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td4 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 63 && counttd < 75) {
-                    td5 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td5 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td5 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 75 && counttd < 81) {
-                    td6 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td6 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td6 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 81 && counttd < 83) {
-                    td7 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td7 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td7 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 83 && counttd < 86) {
-                    td8 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td8 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td8 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 }
+                counts++;
             }
             // console.log(countth);
             if (counttd == 2) {
@@ -1637,7 +2197,7 @@ router.get('/hirosima', function (req, res, next) {    //───────�
 
         //------------------------------------------------------------------データの受け渡しへ
         data = {
-            year: a,
+            year: y,
             content: rows,
             content2: rows2,
         };
@@ -1743,7 +2303,7 @@ router.get('/bathirosima', function (req, res, next) {//広島打撃成績
 
 router.get('/tyuniti', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────中日選手一覧
     var today = new Date();
-    var a = today.getFullYear();
+    var y = today.getFullYear();
     var countth = 1;
     var counttd = 1;
 
@@ -1768,6 +2328,7 @@ router.get('/tyuniti', function (req, res, next) {    //────────
 
     var rows = '';
     var rows2 = '';
+    var counts = 1;
     //─────────────────────────────────────────────────────────────────────ここからスクレイピング
     const url = 'https://npb.jp/bis/teams/rst_d.html';
     (async () => {
@@ -1841,26 +2402,140 @@ router.get('/tyuniti', function (req, res, next) {    //────────
             } else if (counttd == 87) {
                 td8 += '<tr>';
             }
+            counts = 1;
             for (var ee of tt) {
                 const html = await page.evaluate(body => body.innerHTML, ee);
                 // console.log(html);
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>';
                 } else if (counttd > 3 && counttd < 35) {
-                    td2 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td2 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td2 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 35 && counttd < 43) {
-                    td3 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td3 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td3 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 43 && counttd < 59) {
-                    td4 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td4 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td4 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 59 && counttd < 72) {
-                    td5 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td5 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td5 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 72 && counttd < 83) {
-                    td6 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td6 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td6 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 83 && counttd < 86) {
-                    td7 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td7 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td7 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd == 87) {
-                    td8 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td8 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td8 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 }
+                counts++;
             }
             // console.log(countth);
             if (counttd == 2) {
@@ -1904,7 +2579,7 @@ router.get('/tyuniti', function (req, res, next) {    //────────
 
         //------------------------------------------------------------------データの受け渡しへ
         data = {
-            year: a,
+            year: y,
             content: rows,
             content2: rows2,
         };
@@ -2013,7 +2688,7 @@ router.get('/battyuniti', function (req, res, next) {//中日打撃成績
 
 router.get('/orix', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────オリックス選手一覧
     var today = new Date();
-    var a = today.getFullYear();
+    var y = today.getFullYear();
     var countth = 1;
     var counttd = 1;
 
@@ -2040,6 +2715,7 @@ router.get('/orix', function (req, res, next) {    //─────────
 
     var rows = '';
     var rows2 = '';
+    var counts = 1;
     //─────────────────────────────────────────────────────────────────────ここからスクレイピング
     const url = 'https://npb.jp/bis/teams/rst_b.html';
     (async () => {
@@ -2119,28 +2795,158 @@ router.get('/orix', function (req, res, next) {    //─────────
             } else if (counttd > 91 && counttd < 94) {
                 td9 += '<tr>';
             }
+            counts = 1;
             for (var ee of tt) {
                 const html = await page.evaluate(body => body.innerHTML, ee);
                 // console.log(html);
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>';
                 } else if (counttd > 3 && counttd < 35) {
-                    td2 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td2 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td2 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 35 && counttd < 42) {
-                    td3 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td3 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td3 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 42 && counttd < 60) {
-                    td4 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td4 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td4 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 60 && counttd < 74) {
-                    td5 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td5 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td5 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 74 && counttd < 85) {
-                    td6 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td6 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td6 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 85 && counttd < 88) {
-                    td7 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td7 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td7 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 88 && counttd < 91) {
-                    td8 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td8 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td8 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 91 && counttd < 94) {
-                    td9 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td9 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td9 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 }
+                counts++;
             }
             if (counttd == 2) {
                 td1 += '</tr>';
@@ -2187,7 +2993,7 @@ router.get('/orix', function (req, res, next) {    //─────────
 
         //------------------------------------------------------------------データの受け渡しへ
         data = {
-            year: a,
+            year: y,
             content: rows,
             content2: rows2,
         };
@@ -2298,7 +3104,7 @@ router.get('/batorix', function (req, res, next) {//オリックス打撃成績
 
 router.get('/softbank', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────ソフトバンク選手一覧
     var today = new Date();
-    var a = today.getFullYear();
+    var y = today.getFullYear();
     var countth = 1;
     var counttd = 1;
 
@@ -2325,6 +3131,7 @@ router.get('/softbank', function (req, res, next) {    //───────�
 
     var rows = '';
     var rows2 = '';
+    var counts = 1;
     //─────────────────────────────────────────────────────────────────────ここからスクレイピング
     const url = 'https://npb.jp/bis/teams/rst_h.html';
     (async () => {
@@ -2404,28 +3211,158 @@ router.get('/softbank', function (req, res, next) {    //───────�
             } else if (counttd > 121 && counttd < 132) {
                 td9 += '<tr>';
             }
+            counts = 1;
             for (var ee of tt) {
                 const html = await page.evaluate(body => body.innerHTML, ee);
                 // console.log(html);
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>';
                 } else if (counttd > 3 && counttd < 37) {
-                    td2 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td2 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td2 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 37 && counttd < 46) {
-                    td3 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td3 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td3 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 46 && counttd < 61) {
-                    td4 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td4 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td4 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 61 && counttd < 74) {
-                    td5 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td5 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td5 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 74 && counttd < 105) {
-                    td6 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td6 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td6 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 105 && counttd < 110) {
-                    td7 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td7 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td7 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 110 && counttd < 121) {
-                    td8 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td8 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td8 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 121 && counttd < 132) {
-                    td9 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td9 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td9 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 }
+                counts++;
             }
             if (counttd == 2) {
                 td1 += '</tr>';
@@ -2472,7 +3409,7 @@ router.get('/softbank', function (req, res, next) {    //───────�
 
         //------------------------------------------------------------------データの受け渡しへ
         data = {
-            year: a,
+            year: y,
             content: rows,
             content2: rows2,
         };
@@ -2580,7 +3517,7 @@ router.get('/batsoftbank', function (req, res, next) {//ソフトバンク打撃
 
 router.get('/seibu', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────西部選手一覧
     var today = new Date();
-    var a = today.getFullYear();
+    var y = today.getFullYear();
     var countth = 1;
     var counttd = 1;
 
@@ -2607,6 +3544,7 @@ router.get('/seibu', function (req, res, next) {    //────────�
 
     var rows = '';
     var rows2 = '';
+    var counts = 1;
     //─────────────────────────────────────────────────────────────────────ここからスクレイピング
     const url = 'https://npb.jp/bis/teams/rst_l.html';
     (async () => {
@@ -2686,28 +3624,158 @@ router.get('/seibu', function (req, res, next) {    //────────�
             } else if (counttd > 89 && counttd < 93) {
                 td9 += '<tr>';
             }
+            counts = 1;
             for (var ee of tt) {
                 const html = await page.evaluate(body => body.innerHTML, ee);
                 // console.log(html);
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>';
                 } else if (counttd > 3 && counttd < 33) {
-                    td2 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td2 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td2 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 33 && counttd < 41) {
-                    td3 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td3 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td3 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 41 && counttd < 60) {
-                    td4 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td4 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td4 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 60 && counttd < 74) {
-                    td5 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td5 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td5 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 74 && counttd < 84) {
-                    td6 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td6 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td6 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 84 && counttd < 87) {
-                    td7 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td7 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td7 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 87 && counttd < 89) {
-                    td8 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td8 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td8 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 89 && counttd < 93) {
-                    td9 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td9 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td9 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 }
+                counts++;
             }
             if (counttd == 2) {
                 td1 += '</tr>';
@@ -2754,7 +3822,7 @@ router.get('/seibu', function (req, res, next) {    //────────�
 
         //------------------------------------------------------------------データの受け渡しへ
         data = {
-            year: a,
+            year: y,
             content: rows,
             content2: rows2,
         };
@@ -2858,7 +3926,7 @@ router.get('/batseibu', function (req, res, next) {//西部打撃成績
 
 router.get('/rakuten', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────楽天選手一覧
     var today = new Date();
-    var a = today.getFullYear();
+    var y = today.getFullYear();
     var countth = 1;
     var counttd = 1;
 
@@ -2885,6 +3953,7 @@ router.get('/rakuten', function (req, res, next) {    //────────
 
     var rows = '';
     var rows2 = '';
+    var counts = 1;
     //─────────────────────────────────────────────────────────────────────ここからスクレイピング
     const url = 'https://npb.jp/bis/teams/rst_e.html';
     (async () => {
@@ -2964,28 +4033,158 @@ router.get('/rakuten', function (req, res, next) {    //────────
             } else if (counttd > 90 && counttd < 93) {
                 td9 += '<tr>';
             }
+            counts =1;
             for (var ee of tt) {
                 const html = await page.evaluate(body => body.innerHTML, ee);
                 // console.log(html);
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>';
                 } else if (counttd > 3 && counttd < 38) {
-                    td2 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td2 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td2 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 38 && counttd < 45) {
-                    td3 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td3 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td3 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 45 && counttd < 62) {
-                    td4 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td4 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td4 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 62 && counttd < 74) {
-                    td5 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td5 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td5 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 74 && counttd < 82) {
-                    td6 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td6 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td6 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 82 && counttd < 85) {
-                    td7 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td7 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td7 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 85 && counttd < 90) {
-                    td8 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td8 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td8 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 90 && counttd < 93) {
-                    td9 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td9 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td9 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 }
+                counts++;
             }
             if (counttd == 2) {
                 td1 += '</tr>';
@@ -3031,7 +4230,7 @@ router.get('/rakuten', function (req, res, next) {    //────────
 
         //------------------------------------------------------------------データの受け渡しへ
         data = {
-            year: a,
+            year: y,
             content: rows,
             content2: rows2,
         };
@@ -3133,7 +4332,7 @@ router.get('/batrakuten', function (req, res, next) {//楽天打撃成績
 
 router.get('/lotte', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────ロッテ選手一覧
     var today = new Date();
-    var a = today.getFullYear();
+    var y = today.getFullYear();
     var countth = 1;
     var counttd = 1;
 
@@ -3158,6 +4357,7 @@ router.get('/lotte', function (req, res, next) {    //────────�
 
     var rows = '';
     var rows2 = '';
+    var counts = 1;
     //─────────────────────────────────────────────────────────────────────ここからスクレイピング
     const url = 'https://npb.jp/bis/teams/rst_m.html';
     (async () => {
@@ -3231,26 +4431,140 @@ router.get('/lotte', function (req, res, next) {    //────────�
             } else if (counttd > 87 && counttd < 92) {
                 td8 += '<tr>';
             }
+            counts = 1;
             for (var ee of tt) {
                 const html = await page.evaluate(body => body.innerHTML, ee);
                 // console.log(html);
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>';
                 } else if (counttd > 3 && counttd < 41) {
-                    td2 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td2 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td2 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 41 && counttd < 48) {
-                    td3 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td3 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td3 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 48 && counttd < 62) {
-                    td4 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td4 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td4 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 62 && counttd < 75) {
-                    td5 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td5 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td5 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 75 && counttd < 84) {
-                    td6 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td6 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td6 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 84 && counttd < 87) {
-                    td7 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td7 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td7 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 87 && counttd < 92) {
-                    td8 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td8 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td8 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 }
+                counts++;
             }
             // console.log(countth);
             if (counttd == 2) {
@@ -3294,7 +4608,7 @@ router.get('/lotte', function (req, res, next) {    //────────�
 
         //------------------------------------------------------------------データの受け渡しへ
         data = {
-            year: a,
+            year: y,
             content: rows,
             content2: rows2,
         };
@@ -3400,7 +4714,7 @@ router.get('/batlotte', function (req, res, next) {//ロッテ打撃成績
 
 router.get('/hokkaido', function (req, res, next) {    //─────────────────────────────────────────────────────────────────────日ハム選手一覧
     var today = new Date();
-    var a = today.getFullYear();
+    var y = today.getFullYear();
     var countth = 1;
     var counttd = 1;
 
@@ -3424,6 +4738,7 @@ router.get('/hokkaido', function (req, res, next) {    //───────�
 
     var rows = '';
     var rows2 = '';
+    var counts = 1;
     //─────────────────────────────────────────────────────────────────────ここからスクレイピング
     const url = 'https://npb.jp/bis/teams/rst_f.html';
     (async () => {
@@ -3492,24 +4807,122 @@ router.get('/hokkaido', function (req, res, next) {    //───────�
             } else if (counttd > 85 && counttd < 90) {
                 td7 += '<tr>';
             }
+            counts = 1;
             for (var ee of tt) {
                 const html = await page.evaluate(body => body.innerHTML, ee);
                 // console.log(html);
                 if (counttd == 2) {
                     td1 += '<td>' + html + '</td>';
                 } else if (counttd > 3 && counttd < 42) {
-                    td2 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td2 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td2 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 42 && counttd < 51) {
-                    td3 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td3 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td3 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 51 && counttd < 68) {
-                    td4 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td4 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td4 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 68 && counttd < 76) {
-                    td5 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td5 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td5 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 76 && counttd < 85) {
-                    td6 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td6 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td6 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 } else if (counttd > 85 && counttd < 90) {
-                    td7 += '<td>' + html + '</td>';
+                    if (counts == 2) {
+                        const href = await ee.$('a', (ee) => ee.href);
+                        if (href != null) {
+                            const test = await href.getProperty('href');
+                            const urls = await test.jsonValue();
+                            var a = html.slice(0, 9)
+                            var b = urls;
+                            var c = html.slice(35)
+                            a += b;
+                            a += c;
+                            td7 += '<td>' + a + '</td>';
+                            // console.log(a);
+                        }
+                    } else {
+                        td7 += '<td>' + html + '</td>';
+                        // console.log(html);
+                    }
                 }
+                counts++;
             }
             // console.log(countth);
             if (counttd == 2) {
@@ -3550,7 +4963,7 @@ router.get('/hokkaido', function (req, res, next) {    //───────�
 
         //------------------------------------------------------------------データの受け渡しへ
         data = {
-            year: a,
+            year: y,
             content: rows,
             content2: rows2,
         };
